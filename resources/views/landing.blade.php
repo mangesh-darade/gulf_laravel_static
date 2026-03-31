@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="{{ app()->getLocale() }}">
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,21 +8,30 @@
     <title>Gulf Pharmacy Landing</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/gulf-landing.css') }}">
 </head>
+
 <body>
     <main class="page">
         <div class="hero-stack">
             <header class="topbar">
                 <div class="container topbar-inner">
-                    <a class="brand" href="{{ url('/') }}"><img class="brand-mark" src="{{ asset('images/gulf-landing-logo.png') }}" width="200" height="44" alt="Gulf Pharmacy"></a>
+                    <a class="brand" href="{{ url('/') }}"><img class="brand-mark"
+                            src="{{ asset('images/gulf-landing-logo.png') }}" width="200" height="44"
+                            alt="Gulf Pharmacy"></a>
                     <div class="top-icons" aria-label="Search and cart">
                         <button type="button" class="icon-btn" aria-label="Search catalog" data-open-catalog-search>
                             <svg class="icon-btn__svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                         </button>
                         <button type="button" class="icon-btn cart-toggle" aria-label="Cart">
                             <svg class="icon-btn__svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                        <button type="button" class="icon-btn" aria-label="Search">
+                            <img src="{{ asset('images/gulf-icon-search.png') }}" width="20" height="20" alt="Search" style="filter: brightness(0);">
+                        </button>
+                        <button type="button" class="icon-btn cart-toggle" aria-label="Cart">
+                            <img src="{{ asset('images/gulf-icon-cart.png') }}" width="20" height="20" alt="Cart" style="filter: brightness(0);">
                             <span class="cart-count" data-cart-count>0</span>
                         </button>
                     </div>
@@ -32,17 +42,28 @@
                 <div class="container hero-inner">
                     <div class="hero-copy">
                         <h1 id="hero-heading">Recover Safely.<br>Move Freely.</h1>
-                        <p>Expert-curated mobility aids and post-surgery care kits, recommended by DHA-licensed pharmacists.</p>
+                        <p>Expert-curated mobility aids and post-surgery care kits, recommended by DHA-licensed
+                            pharmacists.</p>
                         <div class="hero-actions">
                             <a href="{{ url('/').'?'.http_build_query(['cats' => 'mobility,orthopedic']).'#catalog' }}" class="btn btn-hero-solid">Shop Mobility</a>
                             @php $gulfChatUrl = config('gulf_landing.pharmacist_chat_url'); @endphp
                             <a href="{{ $gulfChatUrl }}" class="btn btn-hero-outline hero-chat-link"@if (strpos($gulfChatUrl, 'http') === 0) target="_blank" rel="noopener noreferrer"@endif><img class="hero-chat-logo" src="{{ asset('images/gulf-hero-chat-pharmacist-logo.png') }}" width="22" height="22" alt="" aria-hidden="true"> Chat with a Pharmacist</a>
+                            <a href="#catalog" class="btn btn-hero-solid">Shop Mobility</a>
+                            <a href="#" class="btn btn-hero-outline hero-chat-link"><img class="hero-chat-logo"
+                                    src="{{ asset('images/gulf-hero-chat-pharmacist-logo.png') }}" width="22"
+                                    height="22" alt="" aria-hidden="true"> Chat with a Pharmacist</a>
                         </div>
                     </div>
-                    <img class="hero-people" src="{{ asset('images/gulf-landing-hero-subject.png') }}" width="520" height="600" alt="Caregiver helping senior with walker">
+                    <img class="hero-people" src="{{ asset('images/gulf-landing-hero-subject1.png') }}" width="520"
+                        height="600" alt="Caregiver helping senior with walker">
+                </div>
+                <div class="hero-separator">
+                    <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+                        <path d="M0,0 Q600,120 1200,0 L1200,0 L0,0 Z" fill="currentColor"></path>
+                    </svg>
                 </div>
             </section>
-           
+
         </div>
 
         <section class="stats" aria-label="Key statistics">
@@ -60,7 +81,8 @@
                     <article class="cat-card">
                         <a class="cat-card-hit" href="{{ url('/').'?'.http_build_query(['cats' => 'mobility,orthopedic,first_aid']).'#catalog' }}" aria-label="Shop post-surgery recovery and crutches in the catalog"></a>
                         <div class="cat-card-media">
-                            <img class="cat-card-img" src="{{ asset('images/gulf-landing-category-recovery.png') }}" alt="Post-surgery recovery and mobility in the home">
+                            <img class="cat-card-img" src="{{ asset('images/gulf-landing-category-recovery.png') }}"
+                                alt="Post-surgery recovery and mobility in the home">
                         </div>
                         <div class="cat-card-body">
                             <h3>Post-Surgery Recovery &amp; Crutches</h3>
@@ -69,7 +91,8 @@
                     <article class="cat-card">
                         <a class="cat-card-hit" href="{{ url('/').'?'.http_build_query(['cats' => 'orthopedic,home_care']).'#catalog' }}" aria-label="Shop everyday wellness supports in the catalog"></a>
                         <div class="cat-card-media cat-card-media--wide-photo">
-                            <img class="cat-card-img" src="{{ asset('images/gulf-landing-category-mobility.png') }}" alt="Everyday wellness and compression supports">
+                            <img class="cat-card-img" src="{{ asset('images/gulf-landing-category-mobility.png') }}"
+                                alt="Everyday wellness and compression supports">
                         </div>
                         <div class="cat-card-body">
                             <h3>Support for Everyday Wellness</h3>
@@ -78,7 +101,8 @@
                     <article class="cat-card">
                         <a class="cat-card-hit" href="{{ url('/').'?'.http_build_query(['cats' => 'home_care']).'#catalog' }}" aria-label="Shop senior protection and bath safety in the catalog"></a>
                         <div class="cat-card-media">
-                            <img class="cat-card-img" src="{{ asset('images/gulf-landing-category-elder-safety.png') }}" alt="Senior care and bath safety">
+                            <img class="cat-card-img" src="{{ asset('images/gulf-landing-category-elder-safety.png') }}"
+                                alt="Senior care and bath safety">
                         </div>
                         <div class="cat-card-body">
                             <h3>Senior Protection and bath safety</h3>
@@ -115,27 +139,29 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                <!-- <div class="brand-row" role="list">
+                    <div class="brand-logo" role="listitem"><img
+                            src="{{ asset('images/gulf-landing-brand-caremax.png') }}" alt="Caremax"></div>
+                    <div class="brand-logo" role="listitem"><img src="{{ asset('images/gulf-landing-brand-jmc.png') }}"
+                            alt="JMC"></div>
+                    <div class="brand-logo" role="listitem"><img src="{{ asset('images/gulf-landing-brand-apex.png') }}"
+                            alt="APEX"></div>
+                    <div class="brand-logo" role="listitem"><img
+                            src="{{ asset('images/gulf-landing-brand-futuro.png') }}" alt="3M Futuro"></div>
+                    <div class="brand-logo" role="listitem"><img
+                            src="{{ asset('images/gulf-landing-brand-jobri.png') }}" alt="Jobst"></div>
+                </div> -->
             </div>
         </section>
 
         <section class="support" aria-labelledby="support-heading">
+            <img src="{{ asset('images/support-decor-short.png') }}" class="support-decor support-decor--left" alt="">
+            <img src="{{ asset('images/support-decor.png') }}" class="support-decor support-decor--right" alt="">
             <div class="container support-inner">
                 <h2 id="support-heading">Reliable Orthopedic Support</h2>
                 <p class="support-tagline">Stability and comfort for everyday movement.</p>
-                <div class="support-products-row" role="list" aria-label="Orthopedic product packages">
-                    <div class="support-product" role="listitem">
-                        <div class="support-product__visual support-product__visual--1" role="img" aria-label="Medicare Finger and Toe Gel Tube Protector"></div>
-                    </div>
-                    <div class="support-product" role="listitem">
-                        <div class="support-product__visual support-product__visual--2" role="img" aria-label="3M Futuro Ankle Performance Comfort Support"></div>
-                    </div>
-                    <div class="support-product" role="listitem">
-                        <div class="support-product__visual support-product__visual--3" role="img" aria-label="Diabetic socks with anti-skid"></div>
-                    </div>
-                    <div class="support-product" role="listitem">
-                        <div class="support-product__visual support-product__visual--4" role="img" aria-label="Variteks rib belt corset"></div>
-                    </div>
+                <div class="support-visual-wrap">
+                    <img src="{{ asset('images/orthopedic-products.png') }}" alt="Reliable Orthopedic Support" class="support-composite-img">
                 </div>
             </div>
         </section>
@@ -301,6 +327,153 @@
                             <button type="button" class="cart-fab" aria-label="Add to cart">&#128722;</button>
                         </article>
                         @endforeach
+                <div class="catalog-grid">
+                    <aside class="filters" id="filters-panel">
+                        <h4>Brands</h4>
+                        <label><input type="checkbox" data-filter-group="brand" value="futuro"> Futuro</label>
+                        <label><input type="checkbox" data-filter-group="brand" value="caremax"> Caremax</label>
+                        <label><input type="checkbox" data-filter-group="brand" value="nexcare"> Nexcare</label>
+                        <h4>Categories</h4>
+                        <label><input type="checkbox" data-filter-group="category" value="recovery"> Post-Surgery &amp;
+                            Recovery</label>
+                        <label><input type="checkbox" data-filter-group="category" value="mobility"> Everyday
+                            Mobility</label>
+                        <label><input type="checkbox" data-filter-group="category" value="safety"> Fall Protection &amp;
+                            Bathroom Safety</label>
+                        <h4>Price Range</h4>
+                        <label><input type="checkbox" data-filter-group="price" value="under50"> Under 50 AED</label>
+                        <label><input type="checkbox" data-filter-group="price" value="50to100"> 50 - 100 AED</label>
+                        <label><input type="checkbox" data-filter-group="price" value="100to200"> 100 - 200 AED</label>
+                        <h4>Customer Rating</h4>
+                        <label><input type="checkbox" data-filter-group="rating" value="4"> 4 Stars &amp; Up</label>
+                        <label><input type="checkbox" data-filter-group="rating" value="3"> 3 Stars &amp; Up</label>
+                    </aside>
+                    <div class="catalog-content">
+                        <div class="catalog-toolbar">
+                            <span><strong data-result-count>0</strong> products found</span>
+                            <button type="button" class="filter-toggle-btn" id="filter-toggle-btn">Filters</button>
+                            <label class="search-wrap">Search:
+                                <input type="search" id="product-search" placeholder="Search for products..."
+                                    autocomplete="off">
+                            </label>
+                            <label>Sort by:
+                                <select id="sort-select">
+                                    <option>Most Popular</option>
+                                    <option>Price: Low to High</option>
+                                    <option>Price: High to Low</option>
+                                </select>
+                            </label>
+                        </div>
+                        <div class="products" id="products-grid">
+                            <article class="product-card" data-name="Futuro Comfort Lift Knee Support Medium"
+                                data-brand="futuro" data-category="recovery" data-rating="5" data-price="58"
+                                data-popularity="124">
+                                <div class="pimg p1"></div>
+                                <div class="stars">★★★★★<span>(124)</span></div>
+                                <h5>Futuro Comfort Lift Knee Support – Medium</h5>
+                                <p class="desc">Adjustable support for everyday stability and comfortable movement.</p>
+                                <div class="product-footer">
+                                    <div class="price">58<small class="price-dec">.00</small><small>AED</small></div>
+                                </div>
+                                <button type="button" class="cart-fab" aria-label="Add to cart"><img src="{{ asset('images/gulf-icon-cart.png') }}" width="20" height="20" alt="Cart" style="filter: brightness(0) invert(1); opacity: 0.95;"></button>
+                            </article>
+                            <article class="product-card" data-name="Nitrile Large Powder-Free Gloves 100 Pack"
+                                data-brand="caremax" data-category="mobility" data-rating="5" data-price="52"
+                                data-popularity="89">
+                                <div class="pimg p2"></div>
+                                <div class="stars">★★★★★<span>(89)</span></div>
+                                <h5>Nitrile Large Powder-Free Gloves — 100 Pack</h5>
+                                <p class="desc">Powder-free exam gloves for safe handling and hygiene.</p>
+                                <div class="product-footer">
+                                    <div class="price">52<small class="price-dec">.00</small><small>AED</small></div>
+                                </div>
+                                <button type="button" class="cart-fab" aria-label="Add to cart"><img src="{{ asset('images/gulf-icon-cart.png') }}" width="20" height="20" alt="Cart" style="filter: brightness(0) invert(1); opacity: 0.95;"></button>
+                            </article>
+                            <article class="product-card" data-name="3M Nexcare Active Bandages 30 Pack Blue"
+                                data-brand="nexcare" data-category="safety" data-rating="4" data-price="31"
+                                data-popularity="42">
+                                <div class="pimg p3"></div>
+                                <div class="stars">★★★★☆<span>(42)</span></div>
+                                <h5>3M Nexcare Active Bandages — 30 Pack — Blue</h5>
+                                <p class="desc">Flexible bandages that stay on through daily activity.</p>
+                                <div class="product-footer">
+                                    <div class="price">31<small class="price-dec">.00</small><small>AED</small></div>
+                                </div>
+                                <button type="button" class="cart-fab" aria-label="Add to cart"><img src="{{ asset('images/gulf-icon-cart.png') }}" width="20" height="20" alt="Cart" style="filter: brightness(0) invert(1); opacity: 0.95;"></button>
+                            </article>
+                            <article class="product-card" data-name="Futuro Comfort Lift Knee Support Large"
+                                data-brand="futuro" data-category="recovery" data-rating="5" data-price="58"
+                                data-popularity="112">
+                                <div class="pimg p1"></div>
+                                <div class="stars">★★★★★<span>(112)</span></div>
+                                <h5>Futuro Comfort Lift Knee Support – Large</h5>
+                                <p class="desc">Adjustable support for everyday stability and comfortable movement.</p>
+                                <div class="product-footer">
+                                    <div class="price">58<small class="price-dec">.00</small><small>AED</small></div>
+                                </div>
+                                <button type="button" class="cart-fab" aria-label="Add to cart"><img src="{{ asset('images/gulf-icon-cart.png') }}" width="20" height="20" alt="Cart" style="filter: brightness(0) invert(1); opacity: 0.95;"></button>
+                            </article>
+                            <article class="product-card" data-name="Nitrile Large Powder-Free Gloves 100 Pack Box 2"
+                                data-brand="caremax" data-category="mobility" data-rating="5" data-price="52"
+                                data-popularity="89">
+                                <div class="pimg p2"></div>
+                                <div class="stars">★★★★★<span>(89)</span></div>
+                                <h5>Nitrile Large Powder-Free Gloves — 100 Pack</h5>
+                                <p class="desc">Powder-free exam gloves for safe handling and hygiene.</p>
+                                <div class="product-footer">
+                                    <div class="price">52<small class="price-dec">.00</small><small>AED</small></div>
+                                </div>
+                                <button type="button" class="cart-fab" aria-label="Add to cart"><img src="{{ asset('images/gulf-icon-cart.png') }}" width="20" height="20" alt="Cart" style="filter: brightness(0) invert(1); opacity: 0.95;"></button>
+                            </article>
+                            <article class="product-card" data-name="3M Nexcare Active Bandages 30 Pack Blue Box 2"
+                                data-brand="nexcare" data-category="safety" data-rating="4" data-price="31"
+                                data-popularity="38">
+                                <div class="pimg p3"></div>
+                                <div class="stars">★★★★☆<span>(38)</span></div>
+                                <h5>3M Nexcare Active Bandages — 30 Pack — Blue</h5>
+                                <p class="desc">Flexible bandages that stay on through daily activity.</p>
+                                <div class="product-footer">
+                                    <div class="price">31<small class="price-dec">.00</small><small>AED</small></div>
+                                </div>
+                                <button type="button" class="cart-fab" aria-label="Add to cart"><img src="{{ asset('images/gulf-icon-cart.png') }}" width="20" height="20" alt="Cart" style="filter: brightness(0) invert(1); opacity: 0.95;"></button>
+                            </article>
+                            <article class="product-card" data-name="Futuro Comfort Lift Knee Support Small"
+                                data-brand="futuro" data-category="recovery" data-rating="5" data-price="58"
+                                data-popularity="98">
+                                <div class="pimg p1"></div>
+                                <div class="stars">★★★★★<span>(98)</span></div>
+                                <h5>Futuro Comfort Lift Knee Support – Small</h5>
+                                <p class="desc">Adjustable support for everyday stability and comfortable movement.</p>
+                                <div class="product-footer">
+                                    <div class="price">58<small class="price-dec">.00</small><small>AED</small></div>
+                                </div>
+                                <button type="button" class="cart-fab" aria-label="Add to cart"><img src="{{ asset('images/gulf-icon-cart.png') }}" width="20" height="20" alt="Cart" style="filter: brightness(0) invert(1); opacity: 0.95;"></button>
+                            </article>
+                            <article class="product-card" data-name="Nitrile Large Powder-Free Gloves 100 Pack Box 3"
+                                data-brand="caremax" data-category="mobility" data-rating="5" data-price="52"
+                                data-popularity="76">
+                                <div class="pimg p2"></div>
+                                <div class="stars">★★★★★<span>(76)</span></div>
+                                <h5>Nitrile Large Powder-Free Gloves — 100 Pack</h5>
+                                <p class="desc">Powder-free exam gloves for safe handling and hygiene.</p>
+                                <div class="product-footer">
+                                    <div class="price">52<small class="price-dec">.00</small><small>AED</small></div>
+                                </div>
+                                <button type="button" class="cart-fab" aria-label="Add to cart"><img src="{{ asset('images/gulf-icon-cart.png') }}" width="20" height="20" alt="Cart" style="filter: brightness(0) invert(1); opacity: 0.95;"></button>
+                            </article>
+                            <article class="product-card" data-name="3M Nexcare Active Bandages 30 Pack Blue Box 3"
+                                data-brand="nexcare" data-category="safety" data-rating="4" data-price="31"
+                                data-popularity="41">
+                                <div class="pimg p3"></div>
+                                <div class="stars">★★★★☆<span>(41)</span></div>
+                                <h5>3M Nexcare Active Bandages — 30 Pack — Blue</h5>
+                                <p class="desc">Flexible bandages that stay on through daily activity.</p>
+                                <div class="product-footer">
+                                    <div class="price">31<small class="price-dec">.00</small><small>AED</small></div>
+                                </div>
+                                <button type="button" class="cart-fab" aria-label="Add to cart"><img src="{{ asset('images/gulf-icon-cart.png') }}" width="20" height="20" alt="Cart" style="filter: brightness(0) invert(1); opacity: 0.95;"></button>
+                            </article>
+                        </div>
                     </div>
                 </div>
                 <p class="no-results is-hidden" id="no-results">No products match the selected filters.</p>
@@ -350,7 +523,8 @@
         <footer class="footer">
             <div class="container footer-inner">
                 <span>© {{ date('Y') }} Gulf Pharmacy, All rights reserved.</span>
-                <span><a href="#">Shipping Policy</a> | <a href="#">Privacy Policy</a> | <a href="#">Terms &amp; Conditions</a> | <a href="#">Return &amp; Refund Policy</a></span>
+                <span><a href="#">Shipping Policy</a> | <a href="#">Privacy Policy</a> | <a href="#">Terms &amp;
+                        Conditions</a> | <a href="#">Return &amp; Refund Policy</a></span>
             </div>
         </footer>
 
@@ -376,4 +550,5 @@
     </div>
     <script src="{{ asset('js/gulf-landing.js') }}"></script>
 </body>
+
 </html>
