@@ -251,20 +251,6 @@
             <div class="container">
                 <h2 id="catalog-heading" class="catalog-heading">Shop mobility &amp; home health</h2>
                 <p class="catalog-lead">Crutches, supports, diagnostics, and recovery essentials — same range as our in-store home health aisle.</p>
-                <div class="catalog-toolbar">
-                    <span><strong data-result-count>0</strong> products found</span>
-                    <button type="button" class="filter-toggle-btn" id="filter-toggle-btn" aria-expanded="false" aria-controls="filters-panel">Filters</button>
-                    <label class="search-wrap">Search:
-                        <input type="search" id="product-search" placeholder="Search mobility and home health…" autocomplete="off">
-                    </label>
-                    <label>Sort by:
-                        <select id="sort-select">
-                            <option>Most Popular</option>
-                            <option>Price: Low to High</option>
-                            <option>Price: High to Low</option>
-                        </select>
-                    </label>
-                </div>
                 <div class="catalog-grid">
                     <aside class="filters" id="filters-panel" aria-label="Product filters">
                         <div class="filters__group is-expanded" data-filter-accordion>
@@ -312,49 +298,13 @@
                             </div>
                         </div>
                     </aside>
-                    <div class="products" id="products-grid">
-                        @foreach ($landingProducts as $i => $p)
-                        <article class="product-card" data-name="{{ $p['search'] }}" data-brand="{{ $p['brand'] }}" data-category="{{ $p['category'] }}" data-rating="{{ (int) $p['rating'] }}" data-price="{{ $p['price'] }}" data-popularity="{{ $p['pop'] }}" data-whole="{{ $p['whole'] }}" data-dec="{{ $p['dec'] }}" @if (!empty($p['image'])) data-image="{{ e($p['image']) }}" @endif>
-                            <div class="pimg{{ !empty($p['image']) ? ' p'.(($i % 3) + 1).' has-custom-img' : ' pimg--no-photo' }}" role="img" @if (!empty($p['image'])) aria-hidden="true" @else aria-label="No product image" @endif @if (!empty($p['image'])) style="background-image:url('{{ e($p['image']) }}')"@endif></div>
-                            <div class="stars">{!! (int) $p['rating'] >= 5 ? '&#9733;&#9733;&#9733;&#9733;&#9733;' : '&#9733;&#9733;&#9733;&#9733;&#9734;' !!}<span>({{ $p['pop'] }})</span></div>
-                            <h5>{{ $p['title'] }}</h5>
-                            <p class="desc">{{ $p['desc'] }}</p>
-                            <div class="product-footer">
-                                <div class="price price--rsp">
-                                    <span class="price__value">{{ $p['whole'] }}<small class="price-dec">.{{ $p['dec'] }}</small><small>AED</small></span>
-                                </div>
-                            </div>
-                            <button type="button" class="cart-fab" aria-label="Add to cart">&#128722;</button>
-                        </article>
-                        @endforeach
-                <div class="catalog-grid">
-                    <aside class="filters" id="filters-panel">
-                        <h4>Brands</h4>
-                        <label><input type="checkbox" data-filter-group="brand" value="futuro"> Futuro</label>
-                        <label><input type="checkbox" data-filter-group="brand" value="caremax"> Caremax</label>
-                        <label><input type="checkbox" data-filter-group="brand" value="nexcare"> Nexcare</label>
-                        <h4>Categories</h4>
-                        <label><input type="checkbox" data-filter-group="category" value="recovery"> Post-Surgery &amp;
-                            Recovery</label>
-                        <label><input type="checkbox" data-filter-group="category" value="mobility"> Everyday
-                            Mobility</label>
-                        <label><input type="checkbox" data-filter-group="category" value="safety"> Fall Protection &amp;
-                            Bathroom Safety</label>
-                        <h4>Price Range</h4>
-                        <label><input type="checkbox" data-filter-group="price" value="under50"> Under 50 AED</label>
-                        <label><input type="checkbox" data-filter-group="price" value="50to100"> 50 - 100 AED</label>
-                        <label><input type="checkbox" data-filter-group="price" value="100to200"> 100 - 200 AED</label>
-                        <h4>Customer Rating</h4>
-                        <label><input type="checkbox" data-filter-group="rating" value="4"> 4 Stars &amp; Up</label>
-                        <label><input type="checkbox" data-filter-group="rating" value="3"> 3 Stars &amp; Up</label>
-                    </aside>
+
                     <div class="catalog-content">
                         <div class="catalog-toolbar">
                             <span><strong data-result-count>0</strong> products found</span>
-                            <button type="button" class="filter-toggle-btn" id="filter-toggle-btn">Filters</button>
+                            <button type="button" class="filter-toggle-btn" id="filter-toggle-btn" aria-expanded="false" aria-controls="filters-panel">Filters</button>
                             <label class="search-wrap">Search:
-                                <input type="search" id="product-search" placeholder="Search for products..."
-                                    autocomplete="off">
+                                <input type="search" id="product-search" placeholder="Search mobility & home health…" autocomplete="off">
                             </label>
                             <label>Sort by:
                                 <select id="sort-select">
@@ -364,115 +314,22 @@
                                 </select>
                             </label>
                         </div>
+
                         <div class="products" id="products-grid">
-                            <article class="product-card" data-name="Futuro Comfort Lift Knee Support Medium"
-                                data-brand="futuro" data-category="recovery" data-rating="5" data-price="58"
-                                data-popularity="124">
-                                <div class="pimg p1"></div>
-                                <div class="stars">★★★★★<span>(124)</span></div>
-                                <h5>Futuro Comfort Lift Knee Support – Medium</h5>
-                                <p class="desc">Adjustable support for everyday stability and comfortable movement.</p>
+                            @foreach ($landingProducts as $i => $p)
+                            <article class="product-card" data-name="{{ $p['search'] }}" data-brand="{{ $p['brand'] }}" data-category="{{ $p['category'] }}" data-rating="{{ (int) $p['rating'] }}" data-price="{{ $p['price'] }}" data-popularity="{{ $p['pop'] }}" data-whole="{{ $p['whole'] }}" data-dec="{{ $p['dec'] }}" @if (!empty($p['image'])) data-image="{{ e($p['image']) }}" @endif>
+                                <div class="pimg{{ !empty($p['image']) ? ' p'.(($i % 3) + 1).' has-custom-img' : ' pimg--no-photo' }}" role="img" @if (!empty($p['image'])) aria-hidden="true" @else aria-label="No product image" @endif @if (!empty($p['image'])) style="background-image:url('{{ e($p['image']) }}')"@endif></div>
+                                <div class="stars">{!! (int) $p['rating'] >= 5 ? '&#9733;&#9733;&#9733;&#9733;&#9733;' : '&#9733;&#9733;&#9733;&#9733;&#9734;' !!}<span>({{ $p['pop'] }})</span></div>
+                                <h5>{{ $p['title'] }}</h5>
+                                <p class="desc">{{ $p['desc'] }}</p>
                                 <div class="product-footer">
-                                    <div class="price">58<small class="price-dec">.00</small><small>AED</small></div>
+                                    <div class="price price--rsp">
+                                        <span class="price__value">{{ $p['whole'] }}<small class="price-dec">.{{ $p['dec'] }}</small><small>AED</small></span>
+                                    </div>
                                 </div>
                                 <button type="button" class="cart-fab" aria-label="Add to cart"><img src="{{ asset('images/gulf-icon-cart.png') }}" width="20" height="20" alt="Cart" style="filter: brightness(0) invert(1); opacity: 0.95;"></button>
                             </article>
-                            <article class="product-card" data-name="Nitrile Large Powder-Free Gloves 100 Pack"
-                                data-brand="caremax" data-category="mobility" data-rating="5" data-price="52"
-                                data-popularity="89">
-                                <div class="pimg p2"></div>
-                                <div class="stars">★★★★★<span>(89)</span></div>
-                                <h5>Nitrile Large Powder-Free Gloves — 100 Pack</h5>
-                                <p class="desc">Powder-free exam gloves for safe handling and hygiene.</p>
-                                <div class="product-footer">
-                                    <div class="price">52<small class="price-dec">.00</small><small>AED</small></div>
-                                </div>
-                                <button type="button" class="cart-fab" aria-label="Add to cart"><img src="{{ asset('images/gulf-icon-cart.png') }}" width="20" height="20" alt="Cart" style="filter: brightness(0) invert(1); opacity: 0.95;"></button>
-                            </article>
-                            <article class="product-card" data-name="3M Nexcare Active Bandages 30 Pack Blue"
-                                data-brand="nexcare" data-category="safety" data-rating="4" data-price="31"
-                                data-popularity="42">
-                                <div class="pimg p3"></div>
-                                <div class="stars">★★★★☆<span>(42)</span></div>
-                                <h5>3M Nexcare Active Bandages — 30 Pack — Blue</h5>
-                                <p class="desc">Flexible bandages that stay on through daily activity.</p>
-                                <div class="product-footer">
-                                    <div class="price">31<small class="price-dec">.00</small><small>AED</small></div>
-                                </div>
-                                <button type="button" class="cart-fab" aria-label="Add to cart"><img src="{{ asset('images/gulf-icon-cart.png') }}" width="20" height="20" alt="Cart" style="filter: brightness(0) invert(1); opacity: 0.95;"></button>
-                            </article>
-                            <article class="product-card" data-name="Futuro Comfort Lift Knee Support Large"
-                                data-brand="futuro" data-category="recovery" data-rating="5" data-price="58"
-                                data-popularity="112">
-                                <div class="pimg p1"></div>
-                                <div class="stars">★★★★★<span>(112)</span></div>
-                                <h5>Futuro Comfort Lift Knee Support – Large</h5>
-                                <p class="desc">Adjustable support for everyday stability and comfortable movement.</p>
-                                <div class="product-footer">
-                                    <div class="price">58<small class="price-dec">.00</small><small>AED</small></div>
-                                </div>
-                                <button type="button" class="cart-fab" aria-label="Add to cart"><img src="{{ asset('images/gulf-icon-cart.png') }}" width="20" height="20" alt="Cart" style="filter: brightness(0) invert(1); opacity: 0.95;"></button>
-                            </article>
-                            <article class="product-card" data-name="Nitrile Large Powder-Free Gloves 100 Pack Box 2"
-                                data-brand="caremax" data-category="mobility" data-rating="5" data-price="52"
-                                data-popularity="89">
-                                <div class="pimg p2"></div>
-                                <div class="stars">★★★★★<span>(89)</span></div>
-                                <h5>Nitrile Large Powder-Free Gloves — 100 Pack</h5>
-                                <p class="desc">Powder-free exam gloves for safe handling and hygiene.</p>
-                                <div class="product-footer">
-                                    <div class="price">52<small class="price-dec">.00</small><small>AED</small></div>
-                                </div>
-                                <button type="button" class="cart-fab" aria-label="Add to cart"><img src="{{ asset('images/gulf-icon-cart.png') }}" width="20" height="20" alt="Cart" style="filter: brightness(0) invert(1); opacity: 0.95;"></button>
-                            </article>
-                            <article class="product-card" data-name="3M Nexcare Active Bandages 30 Pack Blue Box 2"
-                                data-brand="nexcare" data-category="safety" data-rating="4" data-price="31"
-                                data-popularity="38">
-                                <div class="pimg p3"></div>
-                                <div class="stars">★★★★☆<span>(38)</span></div>
-                                <h5>3M Nexcare Active Bandages — 30 Pack — Blue</h5>
-                                <p class="desc">Flexible bandages that stay on through daily activity.</p>
-                                <div class="product-footer">
-                                    <div class="price">31<small class="price-dec">.00</small><small>AED</small></div>
-                                </div>
-                                <button type="button" class="cart-fab" aria-label="Add to cart"><img src="{{ asset('images/gulf-icon-cart.png') }}" width="20" height="20" alt="Cart" style="filter: brightness(0) invert(1); opacity: 0.95;"></button>
-                            </article>
-                            <article class="product-card" data-name="Futuro Comfort Lift Knee Support Small"
-                                data-brand="futuro" data-category="recovery" data-rating="5" data-price="58"
-                                data-popularity="98">
-                                <div class="pimg p1"></div>
-                                <div class="stars">★★★★★<span>(98)</span></div>
-                                <h5>Futuro Comfort Lift Knee Support – Small</h5>
-                                <p class="desc">Adjustable support for everyday stability and comfortable movement.</p>
-                                <div class="product-footer">
-                                    <div class="price">58<small class="price-dec">.00</small><small>AED</small></div>
-                                </div>
-                                <button type="button" class="cart-fab" aria-label="Add to cart"><img src="{{ asset('images/gulf-icon-cart.png') }}" width="20" height="20" alt="Cart" style="filter: brightness(0) invert(1); opacity: 0.95;"></button>
-                            </article>
-                            <article class="product-card" data-name="Nitrile Large Powder-Free Gloves 100 Pack Box 3"
-                                data-brand="caremax" data-category="mobility" data-rating="5" data-price="52"
-                                data-popularity="76">
-                                <div class="pimg p2"></div>
-                                <div class="stars">★★★★★<span>(76)</span></div>
-                                <h5>Nitrile Large Powder-Free Gloves — 100 Pack</h5>
-                                <p class="desc">Powder-free exam gloves for safe handling and hygiene.</p>
-                                <div class="product-footer">
-                                    <div class="price">52<small class="price-dec">.00</small><small>AED</small></div>
-                                </div>
-                                <button type="button" class="cart-fab" aria-label="Add to cart"><img src="{{ asset('images/gulf-icon-cart.png') }}" width="20" height="20" alt="Cart" style="filter: brightness(0) invert(1); opacity: 0.95;"></button>
-                            </article>
-                            <article class="product-card" data-name="3M Nexcare Active Bandages 30 Pack Blue Box 3"
-                                data-brand="nexcare" data-category="safety" data-rating="4" data-price="31"
-                                data-popularity="41">
-                                <div class="pimg p3"></div>
-                                <div class="stars">★★★★☆<span>(41)</span></div>
-                                <h5>3M Nexcare Active Bandages — 30 Pack — Blue</h5>
-                                <p class="desc">Flexible bandages that stay on through daily activity.</p>
-                                <div class="product-footer">
-                                    <div class="price">31<small class="price-dec">.00</small><small>AED</small></div>
-                                </div>
-                                <button type="button" class="cart-fab" aria-label="Add to cart"><img src="{{ asset('images/gulf-icon-cart.png') }}" width="20" height="20" alt="Cart" style="filter: brightness(0) invert(1); opacity: 0.95;"></button>
-                            </article>
+                            @endforeach
                         </div>
                     </div>
                 </div>
