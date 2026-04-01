@@ -1330,30 +1330,19 @@ body {
 }
 
 .store-badges a {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-  min-width: 110px;
+  display: inline-block;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.store-badges a:hover {
+  opacity: 0.85;
+  transform: translateY(-1px);
+}
+
+.store-badges img {
+  display: block;
   height: 38px;
-  padding: 0 16px;
-  border-radius: 6px;
-  background: #111;
-  color: #fff;
-  text-decoration: none;
-}
-
-.badge-sub {
-  font-size: 8px;
-  font-weight: 500;
-  line-height: 1;
-  margin-bottom: 2px;
-}
-
-.badge-title {
-  font-size: 14px;
-  font-weight: 700;
-  line-height: 1;
+  width: auto;
 }
 
 .newsletter-divider {

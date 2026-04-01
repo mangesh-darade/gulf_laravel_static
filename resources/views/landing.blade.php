@@ -255,7 +255,7 @@
                     <aside class="filters" id="filters-panel" aria-label="Product filters">
                         <div class="filters__group is-expanded" data-filter-accordion>
                             <button type="button" class="filters__trigger" id="filters-trigger-brands" aria-expanded="true" aria-controls="filters-panel-brands">
-                                Brands
+                                Brand
                                 <span class="filters__chev" aria-hidden="true"></span>
                             </button>
                             <div class="filters__panel" id="filters-panel-brands" role="region" aria-labelledby="filters-trigger-brands">
@@ -266,7 +266,7 @@
                         </div>
                         <div class="filters__group is-expanded" data-filter-accordion>
                             <button type="button" class="filters__trigger" id="filters-trigger-categories" aria-expanded="true" aria-controls="filters-panel-categories">
-                                Categories
+                                Category
                                 <span class="filters__chev" aria-hidden="true"></span>
                             </button>
                             <div class="filters__panel" id="filters-panel-categories" role="region" aria-labelledby="filters-trigger-categories">
@@ -277,7 +277,7 @@
                         </div>
                         <div class="filters__group is-expanded" data-filter-accordion>
                             <button type="button" class="filters__trigger" id="filters-trigger-price" aria-expanded="true" aria-controls="filters-panel-price">
-                                Price range
+                                Price Range
                                 <span class="filters__chev" aria-hidden="true"></span>
                             </button>
                             <div class="filters__panel" id="filters-panel-price" role="region" aria-labelledby="filters-trigger-price">
@@ -289,12 +289,12 @@
                         </div>
                         <div class="filters__group is-expanded" data-filter-accordion>
                             <button type="button" class="filters__trigger" id="filters-trigger-rating" aria-expanded="true" aria-controls="filters-panel-rating">
-                                Customer rating
+                                Customer Rating
                                 <span class="filters__chev" aria-hidden="true"></span>
                             </button>
                             <div class="filters__panel" id="filters-panel-rating" role="region" aria-labelledby="filters-trigger-rating">
-                                <label><input type="checkbox" data-filter-group="rating" value="4"> 4 Stars &amp; Up</label>
-                                <label><input type="checkbox" data-filter-group="rating" value="3"> 3 Stars &amp; Up</label>
+                                <label><input type="checkbox" data-filter-group="rating" value="4"> <span style="letter-spacing: 2px; font-size: 20px;">&#9733;&#9733;&#9733;&#9733;</span>&amp; Up</label>
+                                <label><input type="checkbox" data-filter-group="rating" value="3"> <span style="letter-spacing: 2px; font-size: 20px;">&#9733;&#9733;&#9733;</span>&amp; Up</label>
                             </div>
                         </div>
                     </aside>
@@ -366,12 +366,10 @@
                     <span>Download App</span>
                     <div class="store-badges">
                         <a href="#" aria-label="Google Play">
-                            <span class="badge-sub">GET IT ON</span>
-                            <span class="badge-title">Google Play</span>
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" height="38">
                         </a>
                         <a href="#" aria-label="App Store">
-                            <span class="badge-sub">Download on the</span>
-                            <span class="badge-title">App Store</span>
+                            <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store" height="38">
                         </a>
                     </div>
                 </div>
