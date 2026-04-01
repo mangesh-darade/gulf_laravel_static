@@ -45,13 +45,9 @@
                         <p>Expert-curated mobility aids and post-surgery care kits, recommended by DHA-licensed
                             pharmacists.</p>
                         <div class="hero-actions">
-                            <a href="{{ url('/').'?'.http_build_query(['cats' => 'mobility,orthopedic']).'#catalog' }}" class="btn btn-hero-solid">Shop Mobility</a>
+                            <a href="#catalog" class="btn btn-hero-solid">Shop Mobility</a>
                             @php $gulfChatUrl = config('gulf_landing.pharmacist_chat_url'); @endphp
                             <a href="{{ $gulfChatUrl }}" class="btn btn-hero-outline hero-chat-link"@if (strpos($gulfChatUrl, 'http') === 0) target="_blank" rel="noopener noreferrer"@endif><img class="hero-chat-logo" src="{{ asset('images/gulf-hero-chat-pharmacist-logo.png') }}" width="22" height="22" alt="" aria-hidden="true"> Chat with a Pharmacist</a>
-                            <!-- <a href="#catalog" class="btn btn-hero-solid">Shop Mobility</a>
-                            <a href="#" class="btn btn-hero-outline hero-chat-link"><img class="hero-chat-logo"
-                                    src="{{ asset('images/gulf-hero-chat-pharmacist-logo.png') }}" width="22"
-                                    height="22" alt="" aria-hidden="true"> Chat with a Pharmacist</a> -->
                         </div>
                     </div>
                     <img class="hero-people" src="{{ asset('images/gulf-landing-hero-subject1.png') }}" width="520"

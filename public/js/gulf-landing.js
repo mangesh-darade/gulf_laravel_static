@@ -112,9 +112,24 @@
     return sorted;
   }
 
+  function updateURL() {
+    try {
+      var selectedCats = activeValues("category");
+      var url = new URL(window.location);
+      if (selectedCats.length > 0) {
+        url.searchParams.set("cats", selectedCats.join(","));
+      } else {
+        url.searchParams.delete("cats");
+      }
+      window.history.replaceState({}, "", url);
+    } catch (e) {}
+  }
+
   function render() {
     var visible = cards.filter(matchesFilters);
     var sorted = sortCards(visible);
+
+    updateURL();
 
     cards.forEach(function (c) { c.classList.add("is-hidden"); });
     sorted.forEach(function (c) {
