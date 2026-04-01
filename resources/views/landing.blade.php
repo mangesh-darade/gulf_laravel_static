@@ -75,7 +75,7 @@
                 <h2 id="cat-heading">Explore by Category</h2>
                 <div class="card-grid">
                     <article class="cat-card">
-                        <a class="cat-card-hit" href="{{ url('/').'?'.http_build_query(['cats' => 'mobility,orthopedic,first_aid']).'#catalog' }}" aria-label="Shop post-surgery recovery and crutches in the catalog"></a>
+                        <a class="cat-card-hit" href="{{ url('/').'?'.http_build_query(['cats' => 'home_health_care']).'#catalog' }}" aria-label="Shop post-surgery recovery and crutches in the catalog"></a>
                         <div class="cat-card-media">
                             <img class="cat-card-img" src="{{ asset('images/gulf-landing-category-recovery.png') }}"
                                 alt="Post-surgery recovery and mobility in the home">
@@ -85,7 +85,7 @@
                         </div>
                     </article>
                     <article class="cat-card">
-                        <a class="cat-card-hit" href="{{ url('/').'?'.http_build_query(['cats' => 'orthopedic,home_care']).'#catalog' }}" aria-label="Shop everyday wellness supports in the catalog"></a>
+                        <a class="cat-card-hit" href="{{ url('/').'?'.http_build_query(['cats' => 'home_health_care']).'#catalog' }}" aria-label="Shop everyday wellness supports in the catalog"></a>
                         <div class="cat-card-media cat-card-media--wide-photo">
                             <img class="cat-card-img" src="{{ asset('images/gulf-landing-category-mobility.png') }}"
                                 alt="Everyday wellness and compression supports">
@@ -95,7 +95,7 @@
                         </div>
                     </article>
                     <article class="cat-card">
-                        <a class="cat-card-hit" href="{{ url('/').'?'.http_build_query(['cats' => 'home_care']).'#catalog' }}" aria-label="Shop senior protection and bath safety in the catalog"></a>
+                        <a class="cat-card-hit" href="{{ url('/').'?'.http_build_query(['cats' => 'home_health_care']).'#catalog' }}" aria-label="Shop senior protection and bath safety in the catalog"></a>
                         <div class="cat-card-media">
                             <img class="cat-card-img" src="{{ asset('images/gulf-landing-category-elder-safety.png') }}"
                                 alt="Senior care and bath safety">
@@ -165,58 +165,23 @@
         @php
             $landingProducts = config('gulf_catalog.landing_products', config('gulf_catalog.products', []));
             $catalogBrandLabels = [
-                'abbott' => 'Abbott Nutrition',
-                'aloe-pura' => 'Aloe Pura',
-                'banana-boat' => 'Banana Boat',
-                'beauty-formulas' => 'Beauty Formulas',
-                'bio-oil' => 'Bio-Oil',
                 'beurer' => 'Beurer',
-                'british-life-sciences' => 'British Life Sciences',
                 'caremax' => 'Caremax',
-                'cellucare' => 'Cellucare',
-                'cerave' => 'CeraVe',
-                'dabur' => 'Dabur',
                 'dermaplast' => 'Dermaplast',
-                'dream-water' => 'Dream Water',
                 'ezycare' => 'Ezy Care',
-                'fresenius-kabi' => 'Fresenius Kabi',
                 'futuro' => 'Futuro',
-                'garnier' => 'Garnier',
-                'himalaya' => 'Himalaya',
-                'isdin' => 'Isdin',
                 'jmc' => 'JMC',
                 'jobri' => 'Jobri',
-                'la-roche-posay' => 'La Roche-Posay',
-                'maybelline' => 'Maybelline',
                 'medisana' => 'Medisana',
                 'meyra' => 'Meyra',
-                'natures-bounty' => 'Nature\'s Bounty',
-                'neutrogena' => 'Neutrogena',
-                'now' => 'NOW',
-                'nutrend' => 'Nutrend',
                 'pic' => 'PIC Solution',
-                'quest' => 'Quest',
                 'roche' => 'Roche Diagnostics',
                 'stax' => 'Flamingo Stax',
-                'sukin' => 'Sukin',
-                'sunshine-nutrition' => 'Sunshine Nutrition',
-                'ultimate' => 'Ultimate',
-                'urgaid' => 'Urgaid',
                 'vantelin' => 'Vantelin',
-                'vichy' => 'Vichy',
-                'vita-vigor' => 'Vita-Vigor',
-                'myra' => 'Myra',
                 'other' => 'Other brands',
             ];
             $catalogCategoryLabels = [
-                'mobility' => 'Mobility & wheelchairs',
-                'orthopedic' => 'Orthopedic & compression',
-                'diagnostics' => 'Diagnostics & monitoring',
-                'first_aid' => 'First aid',
-                'respiratory' => 'Respiratory care',
-                'home_care' => 'Everyday home health',
-                'beauty' => 'Beauty & dermacosmetics',
-                'nutrition' => 'Wellness & clinical nutrition',
+                'home_health_care' => 'Home Health Care',
             ];
             $catalogBrandsUsed = [];
             $catalogCategoriesUsed = [];
@@ -230,7 +195,7 @@
                 array_splice($catalogBrandSlugs, $__o, 1);
                 $catalogBrandSlugs[] = 'other';
             }
-            $catalogCategoryOrder = ['mobility', 'orthopedic', 'diagnostics', 'first_aid', 'respiratory', 'home_care', 'beauty', 'nutrition'];
+            $catalogCategoryOrder = ['home_health_care'];
             $catalogCategorySlugs = [];
             foreach ($catalogCategoryOrder as $c) {
                 if (! empty($catalogCategoriesUsed[$c])) {
@@ -267,7 +232,7 @@
                             </button>
                             <div class="filters__panel" id="filters-panel-categories" role="region" aria-labelledby="filters-trigger-categories">
                                 @foreach ($catalogCategorySlugs as $catSlug)
-                                <label><input type="checkbox" data-filter-group="category" value="{{ $catSlug }}"> {{ $catalogCategoryLabels[$catSlug] ?? ucfirst(str_replace('_', ' ', $catSlug)) }}</label>
+                                <label><input type="checkbox" data-filter-group="category" value="{{ $catSlug }}"@if ($catSlug === 'home_health_care') checked @endif> {{ $catalogCategoryLabels[$catSlug] ?? ucfirst(str_replace('_', ' ', $catSlug)) }}</label>
                                 @endforeach
                             </div>
                         </div>
@@ -316,7 +281,7 @@
 
                         <div class="products" id="products-grid">
                             @foreach ($landingProducts as $i => $p)
-                            <article class="product-card" data-name="{{ $p['search'] }}" data-brand="{{ $p['brand'] }}" data-category="{{ $p['category'] }}" data-rating="{{ (int) $p['rating'] }}" data-price="{{ $p['price'] }}" data-popularity="{{ $p['pop'] }}" data-whole="{{ $p['whole'] }}" data-dec="{{ $p['dec'] }}" @if (!empty($p['image'])) data-image="{{ e($p['image']) }}" @endif>
+                            <article class="product-card" data-name="{{ $p['search'] }}" data-brand="{{ $p['brand'] }}" data-category="{{ $p['category'] }}" data-rating="{{ (int) $p['rating'] }}" data-price="{{ $p['price'] }}" data-popularity="{{ $p['pop'] }}" data-whole="{{ $p['whole'] }}" data-dec="{{ $p['dec'] }}" @if (!empty($p['image'])) data-image="{{ e($p['image']) }}" @endif @if (!empty($p['detail_url'])) data-detail-url="{{ e($p['detail_url']) }}" @endif>
                                 <div class="pimg{{ !empty($p['image']) ? ' p'.(($i % 3) + 1).' has-custom-img' : ' pimg--no-photo' }}" role="img" @if (!empty($p['image'])) aria-hidden="true" @else aria-label="No product image" @endif @if (!empty($p['image'])) style="background-image:url('{{ e($p['image']) }}')"@endif></div>
                                 <div class="stars">{!! (int) $p['rating'] >= 5 ? '&#9733;&#9733;&#9733;&#9733;&#9733;' : '&#9733;&#9733;&#9733;&#9733;&#9734;' !!}<span>({{ $p['pop'] }})</span></div>
                                 <h5>{{ $p['title'] }}</h5>
@@ -340,7 +305,7 @@
             <div class="container promo-copy">
                 <h2 id="promo-heading">Mobility &amp; Recovery Essentials</h2>
                 <p>Expert-curated mobility aids and post-surgery care kits, designed for safe, comfortable recovery at home.</p>
-                <a href="{{ url('/').'?'.http_build_query(['cats' => 'orthopedic,mobility,first_aid']).'#catalog' }}" class="btn btn-ghost promo-catalog-btn">Browse Care Kits</a>
+                <a href="{{ url('/').'?'.http_build_query(['cats' => 'home_health_care']).'#catalog' }}" class="btn btn-ghost promo-catalog-btn">Browse Care Kits</a>
             </div>
         </section>
 
@@ -410,25 +375,6 @@
         </footer>
 
     </main>
-    <div class="product-modal is-hidden" id="product-modal" aria-hidden="true">
-        <div class="product-modal__backdrop" data-close-modal></div>
-        <div class="product-modal__card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-            <button class="product-modal__close" data-close-modal type="button" aria-label="Close">×</button>
-            <div class="product-modal__media">
-                <img class="product-modal__img is-hidden" id="modal-img" src="" alt="">
-                <div class="product-modal__img-placeholder" id="modal-img-placeholder" aria-hidden="true"></div>
-            </div>
-            <div class="product-modal__content">
-                <h3 id="modal-title">Product</h3>
-                <div class="stars" id="modal-stars"></div>
-                <p class="product-modal__desc" id="modal-desc"></p>
-                <div class="product-modal__footer">
-                    <div class="price price--rsp product-modal__price" id="modal-price-wrap"></div>
-                    <button type="button" class="product-modal__add-cart" id="modal-add-cart">Add to cart</button>
-                </div>
-            </div>
-        </div>
-    </div>
     <script src="{{ asset('js/gulf-landing.js') }}"></script>
 </body>
 

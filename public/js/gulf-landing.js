@@ -6,9 +6,20 @@
   var cards = Array.prototype.slice.call(productsGrid.querySelectorAll(".product-card"));
   var checkboxes = Array.prototype.slice.call(document.querySelectorAll("input[data-filter-group]"));
   checkboxes.forEach(function (box) {
-    box.checked = false;
+    if (box.dataset.filterGroup !== "category") {
+      box.checked = false;
+    }
   });
   applyCatalogQueryFilters();
+  try {
+    var catsParam = (new URLSearchParams(window.location.search).get("cats") || "").trim();
+    if (!catsParam) {
+      var homeHealth = document.querySelector(
+        'input[data-filter-group="category"][value="home_health_care"]'
+      );
+      if (homeHealth) homeHealth.checked = true;
+    }
+  } catch (e) {}
   var searchInput = document.getElementById("product-search");
   var sortSelect = document.getElementById("sort-select");
   var resultCount = document.querySelector("[data-result-count]");
@@ -22,18 +33,8 @@
     filterToggleBtn.setAttribute("aria-expanded", open ? "true" : "false");
   }
   var cartCountEls = Array.prototype.slice.call(document.querySelectorAll("[data-cart-count]"));
-  var modal = document.getElementById("product-modal");
-  var modalTitle = document.getElementById("modal-title");
-  var modalDesc = document.getElementById("modal-desc");
-  var modalStars = document.getElementById("modal-stars");
-  var modalImg = document.getElementById("modal-img");
-  var modalImgPlaceholder = document.getElementById("modal-img-placeholder");
-  var modalPriceWrap = document.getElementById("modal-price-wrap");
-  var modalAddCart = document.getElementById("modal-add-cart");
-  var closeModalEls = Array.prototype.slice.call(document.querySelectorAll("[data-close-modal]"));
 
   var cartCount = 0;
-  var modalPreviousFocus = null;
 
   function applyCatalogQueryFilters() {
     try {
@@ -145,82 +146,21 @@
     cartCountEls.forEach(function (el) { el.textContent = String(cartCount); });
   }
 
-  function openModalForCard(card) {
-    if (!modal) return;
-    var title = card.querySelector("h5");
-    var desc = card.querySelector(".desc");
-    var stars = card.querySelector(".stars");
-    modalTitle.textContent = title ? title.textContent : "Product";
-    modalDesc.textContent = desc ? desc.textContent : "";
-    if (modalStars && stars) {
-      modalStars.innerHTML = stars.innerHTML;
-    } else if (modalStars) {
-      modalStars.innerHTML = "";
-    }
-
-    var whole = card.dataset.whole != null ? String(card.dataset.whole) : "0";
-    var dec = card.dataset.dec != null ? String(card.dataset.dec) : "00";
-    if (modalPriceWrap) {
-      modalPriceWrap.innerHTML =
-        '<span class="price__value">' +
-        whole +
-        '<small class="price-dec">.' +
-        dec +
-        "</small><small>AED</small></span>";
-    }
-
-    var imgUrl = (card.dataset.image || "").trim();
-    if (modalImg && modalImgPlaceholder) {
-      modalImg.onerror = function () {
-        modalImg.classList.add("is-hidden");
-        modalImg.removeAttribute("src");
-        modalImgPlaceholder.classList.remove("is-hidden");
-      };
-      if (imgUrl) {
-        modalImg.alt = title ? title.textContent : "Product";
-        modalImg.src = imgUrl;
-        modalImg.classList.remove("is-hidden");
-        modalImgPlaceholder.classList.add("is-hidden");
-      } else {
-        modalImg.onload = null;
-        modalImg.onerror = null;
-        modalImg.removeAttribute("src");
-        modalImg.classList.add("is-hidden");
-        modalImg.alt = "";
-        modalImgPlaceholder.classList.remove("is-hidden");
-      }
-    }
-
-    modalPreviousFocus = document.activeElement;
-    modal.classList.remove("is-hidden");
-    modal.setAttribute("aria-hidden", "false");
-    document.body.style.overflow = "hidden";
-    window.requestAnimationFrame(function () {
-      if (modalAddCart) modalAddCart.focus();
-    });
+  function productDetailUrl(card) {
+    return (card.dataset.detailUrl || "").trim();
   }
 
-  function closeModal() {
-    if (!modal) return;
-    var toFocus = modalPreviousFocus;
-    modalPreviousFocus = null;
-    modal.classList.add("is-hidden");
-    modal.setAttribute("aria-hidden", "true");
-    document.body.style.overflow = "";
-    if (modalImg) {
-      modalImg.onload = null;
-      modalImg.onerror = null;
-      modalImg.removeAttribute("src");
-      modalImg.classList.add("is-hidden");
+  function goToProductStore(card, e) {
+    var url = productDetailUrl(card);
+    if (!url) {
+      if (e) e.preventDefault();
+      return;
     }
-    if (modalImgPlaceholder) modalImgPlaceholder.classList.remove("is-hidden");
-    window.requestAnimationFrame(function () {
-      if (toFocus && typeof toFocus.focus === "function") {
-        try {
-          toFocus.focus();
-        } catch (err) {}
-      }
-    });
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    window.location.assign(url);
   }
 
   var filterAccordions = Array.prototype.slice.call(
@@ -268,25 +208,15 @@
     var addBtn = card.querySelector(".cart-fab");
     if (addBtn) {
       addBtn.addEventListener("click", function (e) {
-        e.stopPropagation();
-        cartCount += 1;
-        updateCartCount();
+        goToProductStore(card, e);
       });
     }
     card.addEventListener("click", function (e) {
-      if (e.target.classList.contains("cart-fab")) return;
-      openModalForCard(card);
+      if (e.target.closest(".cart-fab")) return;
+      goToProductStore(card, e);
     });
   });
 
-  if (modalAddCart) {
-    modalAddCart.addEventListener("click", function () {
-      cartCount += 1;
-      updateCartCount();
-    });
-  }
-
-  closeModalEls.forEach(function (el) { el.addEventListener("click", closeModal); });
   document.addEventListener("click", function (e) {
     if (!filtersPanel || !filterToggleBtn) return;
     if (window.innerWidth > 900) return;
@@ -305,10 +235,6 @@
   });
   document.addEventListener("keydown", function (e) {
     if (e.key !== "Escape") return;
-    if (modal && !modal.classList.contains("is-hidden")) {
-      closeModal();
-      return;
-    }
     if (filtersPanel && filtersPanel.classList.contains("is-open")) {
       filtersPanel.classList.remove("is-open");
       syncFiltersDrawer();
