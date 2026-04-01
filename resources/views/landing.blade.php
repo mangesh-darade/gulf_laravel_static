@@ -46,7 +46,7 @@
                             pharmacists.</p>
                         <div class="hero-actions">
                             <a href="#catalog" class="btn btn-hero-solid">Shop Mobility</a>
-                            @php $gulfChatUrl = config('gulf_landing.pharmacist_chat_url'); @endphp
+                            @php $gulfChatUrl = 'https://wa.me/971564185247'; @endphp
                             <a href="{{ $gulfChatUrl }}" class="btn btn-hero-outline hero-chat-link"@if (strpos($gulfChatUrl, 'http') === 0) target="_blank" rel="noopener noreferrer"@endif><img class="hero-chat-logo" src="{{ asset('images/gulf-hero-chat-pharmacist-logo.png') }}" width="22" height="22" alt="" aria-hidden="true"> Chat with a Pharmacist</a>
                         </div>
                     </div>
