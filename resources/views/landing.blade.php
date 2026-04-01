@@ -132,11 +132,11 @@
                                 <div class="brand-logo" role="listitem"><img src="{{ asset('images/'.$b['file']) }}" alt="{{ $b['alt'] }}"></div>
                                 @endforeach
                             </div>
-                            <div class="brand-marquee-group brand-marquee-group--clone" aria-hidden="true">
+                            <!-- <div class="brand-marquee-group brand-marquee-group--clone" aria-hidden="true">
                                 @foreach ($mobilityBrands as $b)
                                 <div class="brand-logo"><img src="{{ asset('images/'.$b['file']) }}" alt="" loading="lazy" decoding="async"></div>
                                 @endforeach
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 <!-- <div class="brand-row" role="list">
@@ -301,18 +301,21 @@
 
                     <div class="catalog-content">
                         <div class="catalog-toolbar">
-                            <span><strong data-result-count>0</strong> products found</span>
-                            <button type="button" class="filter-toggle-btn" id="filter-toggle-btn" aria-expanded="false" aria-controls="filters-panel">Filters</button>
+                            <span class="toolbar-results">Showing <span data-result-count>0</span> products</span>
                             <label class="search-wrap">Search:
                                 <input type="search" id="product-search" placeholder="Search mobility & home health…" autocomplete="off">
                             </label>
-                            <label>Sort by:
-                                <select id="sort-select">
-                                    <option>Most Popular</option>
-                                    <option>Price: Low to High</option>
-                                    <option>Price: High to Low</option>
-                                </select>
-                            </label>
+                            <div class="toolbar-actions">
+                                <button type="button" class="filter-toggle-btn" id="filter-toggle-btn" aria-expanded="false" aria-controls="filters-panel">Filters</button>
+                                <label class="sort-wrap">
+                                    <span class="sort-label">Sort by:</span>
+                                    <select id="sort-select" class="sort-select-ui">
+                                        <option>Most Popular</option>
+                                        <option>Price: Low to High</option>
+                                        <option>Price: High to Low</option>
+                                    </select>
+                                </label>
+                            </div>
                         </div>
 
                         <div class="products" id="products-grid">
@@ -326,8 +329,8 @@
                                     <div class="price price--rsp">
                                         <span class="price__value">{{ $p['whole'] }}<small class="price-dec">.{{ $p['dec'] }}</small><small>AED</small></span>
                                     </div>
+                                    <button type="button" class="cart-fab" aria-label="Add to cart"><img src="{{ asset('images/gulf-icon-cart.png') }}" width="20" height="20" alt="Cart" style="filter: brightness(0) invert(1); opacity: 0.95;"></button>
                                 </div>
-                                <button type="button" class="cart-fab" aria-label="Add to cart"><img src="{{ asset('images/gulf-icon-cart.png') }}" width="20" height="20" alt="Cart" style="filter: brightness(0) invert(1); opacity: 0.95;"></button>
                             </article>
                             @endforeach
                         </div>
@@ -347,7 +350,7 @@
 
         <section class="newsletter" id="newsletter" aria-label="Newsletter and apps">
             <div class="container news-inner">
-                <div>
+                <div class="news-text">
                     <h3>Be the first to know</h3>
                     <p class="sub">Get newsletters and exclusive offers</p>
                 </div>
@@ -355,33 +358,60 @@
                     <div class="subscribe-form__field">
                         <label class="visually-hidden" for="newsletter-email">Email address</label>
                         <input type="email" id="newsletter-email" name="email" placeholder="Email" autocomplete="email" required>
-                        <button type="submit">Subscribe</button>
                     </div>
+                    <button type="submit" class="btn-notify">Notify Me &rarr;</button>
                     <p class="subscribe-form__status" id="subscribe-form-status" role="status" aria-live="polite"></p>
                 </form>
                 <div class="app-links">
-                    <span>Download our app</span>
+                    <span>Download App</span>
                     <div class="store-badges">
-                        <a href="#" aria-label="Google Play">Google Play</a>
-                        <a href="#" aria-label="App Store">App Store</a>
+                        <a href="#" aria-label="Google Play">
+                            <span class="badge-sub">GET IT ON</span>
+                            <span class="badge-title">Google Play</span>
+                        </a>
+                        <a href="#" aria-label="App Store">
+                            <span class="badge-sub">Download on the</span>
+                            <span class="badge-title">App Store</span>
+                        </a>
                     </div>
                 </div>
             </div>
+
+            <div class="container"><hr class="newsletter-divider"></div>
+
             <div class="features-bar">
                 <div class="container features-grid">
-                    <div class="feature-item"><strong>Free Shipping</strong><span>For orders over 200 AED</span></div>
-                    <div class="feature-item"><strong>24/7 Support</strong><span>Expert assistance</span></div>
-                    <div class="feature-item"><strong>Secure Payments</strong><span>100% protected</span></div>
-                    <div class="feature-item"><strong>Easy Returns</strong><span>Within 30 days</span></div>
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 12h8m-4-4l4 4-4 4"/></svg>
+                        </div>
+                        <strong>Free Shipping</strong><span>For all orders over AED 50*</span>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+                        </div>
+                        <strong>24/7 Support</strong><span>Easy returns and refund</span>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><rect x="8" y="11" width="8" height="6" rx="1"/><path d="M10 11V9a2 2 0 0 1 4 0v2"/></svg>
+                        </div>
+                        <strong>Secure Payments</strong><span>Powered by Network</span>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9 10l-3 3 3 3"/><path d="M6 13h8a4 4 0 0 0 4-4"/></svg>
+                        </div>
+                        <strong>Easy Returns</strong><span>Dedicated Support</span>
+                    </div>
                 </div>
             </div>
         </section>
 
         <footer class="footer">
             <div class="container footer-inner">
-                <span>© {{ date('Y') }} Gulf Pharmacy, All rights reserved.</span>
-                <span><a href="#">Shipping Policy</a> | <a href="#">Privacy Policy</a> | <a href="#">Terms &amp;
-                        Conditions</a> | <a href="#">Return &amp; Refund Policy</a></span>
+                <span class="footer-copy">&copy; 2025 Gulf Pharmacy, All rights reserved. <a href="#">Shipping Policy</a> | <a href="#">Privacy Policy</a> | <a href="#">Terms &amp; Conditions</a> | <a href="#">Return &amp; Refund Policy</a></span>
             </div>
         </footer>
 
