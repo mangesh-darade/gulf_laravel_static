@@ -27,9 +27,9 @@
                         </button>
                         <button type="button" class="icon-btn cart-toggle" aria-label="Cart">
                             <svg class="icon-btn__svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-                        <button type="button" class="icon-btn" aria-label="Search">
+                        <!-- <button type="button" class="icon-btn" aria-label="Search">
                             <img src="{{ asset('images/gulf-icon-search.png') }}" width="20" height="20" alt="Search" style="filter: brightness(0);">
-                        </button>
+                        </button> -->
                         <button type="button" class="icon-btn cart-toggle" aria-label="Cart">
                             <img src="{{ asset('images/gulf-icon-cart.png') }}" width="20" height="20" alt="Cart" style="filter: brightness(0);">
                             <span class="cart-count" data-cart-count>0</span>
@@ -48,10 +48,10 @@
                             <a href="{{ url('/').'?'.http_build_query(['cats' => 'mobility,orthopedic']).'#catalog' }}" class="btn btn-hero-solid">Shop Mobility</a>
                             @php $gulfChatUrl = config('gulf_landing.pharmacist_chat_url'); @endphp
                             <a href="{{ $gulfChatUrl }}" class="btn btn-hero-outline hero-chat-link"@if (strpos($gulfChatUrl, 'http') === 0) target="_blank" rel="noopener noreferrer"@endif><img class="hero-chat-logo" src="{{ asset('images/gulf-hero-chat-pharmacist-logo.png') }}" width="22" height="22" alt="" aria-hidden="true"> Chat with a Pharmacist</a>
-                            <a href="#catalog" class="btn btn-hero-solid">Shop Mobility</a>
+                            <!-- <a href="#catalog" class="btn btn-hero-solid">Shop Mobility</a>
                             <a href="#" class="btn btn-hero-outline hero-chat-link"><img class="hero-chat-logo"
                                     src="{{ asset('images/gulf-hero-chat-pharmacist-logo.png') }}" width="22"
-                                    height="22" alt="" aria-hidden="true"> Chat with a Pharmacist</a>
+                                    height="22" alt="" aria-hidden="true"> Chat with a Pharmacist</a> -->
                         </div>
                     </div>
                     <img class="hero-people" src="{{ asset('images/gulf-landing-hero-subject1.png') }}" width="520"

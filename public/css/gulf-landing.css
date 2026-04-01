@@ -1072,7 +1072,7 @@ body {
   background-color: #0a0a0a;
   border: 1px solid #eaedf0;
   background-image: url("../images/product-strip.png");
-  background-size: 400% auto;
+  background-size: 100% auto;
   background-position: 0% 50%;
   flex-shrink: 0;
 }
