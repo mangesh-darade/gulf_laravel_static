@@ -221,7 +221,7 @@ body {
 .hero-separator svg {
   display: block;
   width: 100%;
-  height: clamp(40px, 8vw, 120px);
+  height: clamp(80px, 12vw, 160px);
 }
 
 .hero-inner {
@@ -238,6 +238,7 @@ body {
 .hero-copy {
   grid-column: 1 / span 6;
   max-width: 100%;
+  margin-left: 150px;
 }
 
 .hero-people {
@@ -245,7 +246,7 @@ body {
   width: 100%;
   max-width: 460px;
   margin: 0 auto;
-  max-height: min(580px, 70vh);
+  max-height: min(580px, 80vh);
   height: auto;
   align-self: end;
   object-fit: contain;
@@ -255,7 +256,7 @@ body {
 }
 
 .hero h1 {
-  margin: 0 0 14px;
+  margin: 0 0 8px;
   font-size: clamp(32px, 4.2vw, 52px);
   line-height: 1.02;
   font-weight: 800;
@@ -263,12 +264,12 @@ body {
 }
 
 .hero p {
-  margin: 0 0 22px;
+  margin: 0 0 16px;
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.55;
   color: rgba(255, 255, 255, 0.95);
-  max-width: 36ch;
+  max-width: 50ch;
 }
 
 .hero-actions {
@@ -288,8 +289,12 @@ body {
   align-items: center;
   justify-content: center;
   line-height: 1.2;
-  padding-top: 10px;
-  padding-bottom: 10px;
+  padding: 10px 0;
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  text-transform: none;
+  letter-spacing: 0;
 }
 
 .btn {
@@ -317,13 +322,15 @@ body {
 
 .btn-hero-solid {
   background: #fff;
-  color: var(--gp-teal-dark);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.14);
+  color: var(--gp-teal-mid);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+  padding: 10px 26px;
+  border-radius: 8px;
 }
 
 .btn-hero-outline {
   color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.85);
+  border: none;
   background: transparent;
 }
 
@@ -815,6 +822,18 @@ body {
   justify-content: center;
 }
 
+.support-visual-link {
+  display: block;
+  /* width: 100%; */
+  text-decoration: none;
+  transition: transform 0.3s ease;
+}
+
+.support-visual-link:hover {
+  transform: scale(1.015);
+  cursor: pointer;
+}
+
 .support-composite-img {
   width: 100%;
   height: auto;
@@ -941,6 +960,9 @@ body {
 }
 
 .filters {
+  position: sticky;
+  top: 40px;
+  align-self: start;
   border: 1px solid #eaedf0;
   border-radius: var(--gp-radius-md);
   padding: 24px 28px 32px;
@@ -1638,6 +1660,8 @@ body {
   .hero-copy {
     align-self: stretch;
     padding-bottom: 12px;
+    margin-left: 11px;
+    text-align: center;
   }
 
   .hero-people {

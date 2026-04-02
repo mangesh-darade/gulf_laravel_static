@@ -25,15 +25,9 @@
                         <button type="button" class="icon-btn" aria-label="Search catalog" data-open-catalog-search>
                             <svg class="icon-btn__svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                         </button>
-                        <button type="button" class="icon-btn cart-toggle" aria-label="Cart">
+                        <a href="#catalog" class="icon-btn" aria-label="View Catalog">
                             <svg class="icon-btn__svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-                        <!-- <button type="button" class="icon-btn" aria-label="Search">
-                            <img src="{{ asset('images/gulf-icon-search.png') }}" width="20" height="20" alt="Search" style="filter: brightness(0);">
-                        </button> -->
-                        <button type="button" class="icon-btn cart-toggle" aria-label="Cart">
-                            <img src="{{ asset('images/gulf-icon-cart.png') }}" width="20" height="20" alt="Cart" style="filter: brightness(0);">
-                            <span class="cart-count" data-cart-count>0</span>
-                        </button>
+                        </a>
                     </div>
                 </div>
             </header>
@@ -55,7 +49,7 @@
                 </div>
                 <div class="hero-separator">
                     <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
-                        <path d="M0,0 Q600,120 1200,0 L1200,0 L0,0 Z" fill="currentColor"></path>
+                        <path d="M0,0 C300,120 900,120 1200,0 L1200,0 L0,0 Z" fill="currentColor"></path>
                     </svg>
                 </div>
             </section>
@@ -157,7 +151,9 @@
                 <h2 id="support-heading">Reliable Orthopedic Support</h2>
                 <p class="support-tagline">Stability and comfort for everyday movement.</p>
                 <div class="support-visual-wrap">
-                    <img src="{{ asset('images/orthopedic-products.png') }}" alt="Reliable Orthopedic Support" class="support-composite-img">
+                    <a href="https://gulfpharmacy.com/c/home-health-care" class="support-visual-link">
+                        <img src="{{ asset('images/orthopedic-products.png') }}" alt="Reliable Orthopedic Support" class="support-composite-img">
+                    </a>
                 </div>
             </div>
         </section>
@@ -290,7 +286,7 @@
                                     <div class="price price--rsp">
                                         <span class="price__value">{{ $p['whole'] }}<small class="price-dec">.{{ $p['dec'] }}</small><small>AED</small></span>
                                     </div>
-                                    <button type="button" class="cart-fab" aria-label="Add to cart"><img src="{{ asset('images/gulf-icon-cart.png') }}" width="20" height="20" alt="Cart" style="filter: brightness(0) invert(1); opacity: 0.95;"></button>
+                                    <button type="button" class="cart-fab" aria-label="Add to cart"><img src="{{ asset('images/Shop_Arrow.svg') }}" width="20" height="20" alt="Cart" style="filter: brightness(0) invert(1); opacity: 0.95;"></button>
                                 </div>
                             </article>
                             @endforeach
