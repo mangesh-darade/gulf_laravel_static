@@ -58,24 +58,8 @@
         <section class="categories">
             <div class="container">
                 <h2>Explore by Category</h2>
-                <div class="card-grid">
-                    <article class="cat-card">
-                        <a class="cat-card-hit" href="#catalog" aria-label="Shop post-surgery recovery and crutches in the catalog"></a>
-                        <div class="cat-card-media">
-                            <img class="cat-card-img" src="images/gulf-landing-category-recovery.png" alt="Post-surgery recovery and mobility in the home">
-                        </div>
-                        <div class="cat-card-body"><h3>Post-Surgery Recovery &amp; Crutches</h3></div>
-                    </article>
-                    <article class="cat-card">
-                        <a class="cat-card-hit" href="#catalog"></a>
-                        <div class="cat-card-media"><img class="cat-card-img" src="images/gulf-landing-category-mobility.png" alt=""></div>
-                        <div class="cat-card-body"><h3>Everyday Wellness</h3></div>
-                    </article>
-                    <article class="cat-card">
-                        <a class="cat-card-hit" href="#catalog"></a>
-                        <div class="cat-card-media"><img class="cat-card-img" src="images/gulf-landing-category-elder-safety.png" alt=""></div>
-                        <div class="cat-card-body"><h3>Senior Protection</h3></div>
-                    </article>
+                <div class="card-grid" id="category-grid">
+                    <!-- Dynamically populated by JS from products.json -->
                 </div>
             </div>
         </section>
@@ -164,7 +148,9 @@
                                 <span class="filters__chev" aria-hidden="true"></span>
                             </button>
                             <div class="filters__panel" id="filters-panel-categories" role="region" aria-labelledby="filters-trigger-categories">
-                                <label style="display:flex; align-items:center; gap:12px; font-size:14px; margin:10px 0; color:#647481; font-weight:500; cursor:pointer;"><input type="checkbox" data-filter-group="category" value="home_health_care" checked> Home Health Care</label>
+                                <label style="display:flex; align-items:center; gap:12px; font-size:14px; margin:10px 0; color:#647481; font-weight:500; cursor:pointer;"><input type="checkbox" data-filter-group="category" value="recovery"> Post-Surgery Recovery</label>
+                                <label style="display:flex; align-items:center; gap:12px; font-size:14px; margin:10px 0; color:#647481; font-weight:500; cursor:pointer;"><input type="checkbox" data-filter-group="category" value="mobility"> Everyday Wellness</label>
+                                <label style="display:flex; align-items:center; gap:12px; font-size:14px; margin:10px 0; color:#647481; font-weight:500; cursor:pointer;"><input type="checkbox" data-filter-group="category" value="elder_safety"> Senior Protection</label>
                             </div>
                         </div>
 

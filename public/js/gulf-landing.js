@@ -1,5 +1,6 @@
 (function () {
     const grid = document.getElementById('products-grid');
+    const catGrid = document.getElementById('category-grid');
     const searchInput = document.getElementById('product-search');
     const boxes = Array.from(document.querySelectorAll('input[data-filter-group]'));
     const countEl = document.querySelector('[data-result-count]');
@@ -8,16 +9,64 @@
     const filtersPanel = document.getElementById('filters-panel');
 
     let allProducts = [];
+    let allCategories = [];
 
     async function init() {
         try {
             const response = await fetch('data/products.json');
-            allProducts = await response.json();
+            const data = await response.json();
+            
+            if (Array.isArray(data)) {
+                allProducts = data;
+            } else {
+                allProducts = data.products || [];
+                allCategories = data.categories || [];
+            }
+
+            renderCategories();
             render();
             sortProducts();
         } catch (error) {
             console.error('Error fetching products:', error);
         }
+    }
+
+    function renderCategories() {
+        if (!catGrid || !allCategories.length) return;
+        catGrid.innerHTML = '';
+        allCategories.forEach(c => {
+            const card = document.createElement('article');
+            card.className = 'cat-card';
+            card.innerHTML = `
+                <a class="cat-card-hit" href="#catalog" aria-label="${c.aria || ''}"></a>
+                <div class="cat-card-media">
+                    <img class="cat-card-img" src="${c.image}" alt="">
+                </div>
+                <div class="cat-card-body"><h3>${c.title}</h3></div>
+            `;
+            
+            // Link to main catalog filter logic
+            const hit = card.querySelector('.cat-card-hit');
+            hit.onclick = (e) => {
+                e.preventDefault();
+                
+                // 1. Uncheck all other category filters
+                const catCheckboxes = boxes.filter(b => b.dataset.filterGroup === 'category');
+                catCheckboxes.forEach(cb => cb.checked = false);
+                
+                // 2. Check the one matching this category ID
+                const targetBox = catCheckboxes.find(cb => cb.value === c.id);
+                if (targetBox) targetBox.checked = true;
+                
+                // 3. Scroll to catalog
+                document.getElementById('catalog').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                
+                // 4. Re-render the grid
+                render();
+            };
+
+            catGrid.appendChild(card);
+        });
     }
 
     function getPriceGroup(price) {
@@ -41,7 +90,10 @@
         allProducts.forEach(p => {
             const searchOk = !search || p.search.includes(search);
             const brandOk = !selectedBrands.length || selectedBrands.includes(p.brand);
-            const catOk = !selectedCats.length || selectedCats.includes(p.category);
+            
+            // Check mkt_category since we mapped it to our new sidebar filters
+            const catOk = !selectedCats.length || selectedCats.includes(p.mkt_category);
+            
             const priceOk = !selectedPrices.length || selectedPrices.includes(getPriceGroup(p.price));
             const ratingOk = p.rating >= minRating;
 
@@ -95,6 +147,15 @@
             return 0;
         });
         render();
+    }
+
+    // Refresh the boxes list to include the newly possible dynamic filters
+    function refreshBindings() {
+        const newBoxes = Array.from(document.querySelectorAll('input[data-filter-group]'));
+        newBoxes.forEach(b => {
+             b.removeEventListener('change', render);
+             b.addEventListener('change', render);
+        });
     }
 
     boxes.forEach(b => b.addEventListener('change', render));
