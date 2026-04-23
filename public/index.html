@@ -40,6 +40,11 @@
                         <a href="#catalog" class="btn-hero-solid">Shop Mobility</a>
                         <a href="https://wa.me/971564185247" class="hero-chat-link"><img class="hero-chat-logo" src="images/gulf-hero-chat-pharmacist-logo.png" width="22" height="22"> Chat with a Pharmacist</a>
                     </div>
+                    <div class="hero-stats-grid">
+                        <div class="hero-stats-item"><strong>1M+</strong><span>Happy Customers</span></div>
+                        <div class="hero-stats-item"><strong>4K+</strong><span>Product Catalog</span></div>
+                        <div class="hero-stats-item"><strong>24/7</strong><span>Pharmacist Support</span></div>
+                    </div>
                 </div>
                 <img class="hero-people" src="images/gulf-landing-hero-subject1.png" width="520" alt="">
             </div>
@@ -48,17 +53,11 @@
                 </svg></div>
         </section>
 
-        <section class="stats">
-            <div class="container stats-grid">
-                <div><strong>1M+</strong><span>Happy Customers</span></div>
-                <div><strong>4K+</strong><span>Product Catalog</span></div>
-                <div><strong>24/7</strong><span>Pharmacist Support</span></div>
-            </div>
-        </section>
+
 
         <section class="categories">
             <div class="container">
-                <h2>Explore by Category</h2>
+                <h2 class="Explore" style="color: #008b8b;">Explore by Category </h2>
                 <div class="card-grid" id="category-grid">
                     <!-- Dynamically populated by JS from products.json -->
                 </div>
@@ -194,42 +193,59 @@
             <div class="container promo-copy">
                 <h2 id="promo-heading">Mobility &amp; Recovery Essentials</h2>
                 <p>Expert-curated mobility aids and post-surgery care kits, designed for safe, comfortable recovery at home.</p>
-                <a href="#catalog" class="promo-catalog-btn">Browse Care Kits</a>
+                <a href="https://gulfpharmacy.com/" class="promo-catalog-btn">Explore More Products</a>
             </div>
         </section>
 
-        <section class="newsletter" id="newsletter" aria-label="Newsletter and apps" style="background: #eff8f9; padding: 64px 0 24px;">
-            <div class="container news-inner">
-                <div class="news-text">
-                    <h3 style="font-weight: 800; font-size: 28px;">Be the first to know</h3>
-                    <p class="sub" style="font-weight: 700; font-size: 16px; margin-bottom: 24px;">Get newsletters and exclusive offers</p>
-                </div>
-                <div class="news-actions">
-                    <form class="subscribe-form" id="subscribe-form" action="#" method="post" novalidate>
-                        <div class="subscribe-form__field">
-                            <label class="visually-hidden" for="newsletter-email">Email address</label>
-                            <input type="email" id="newsletter-email" name="email" placeholder="Email" autocomplete="email" required style="box-shadow: none; border: 1px solid #eef2f3;">
+        <section class="site-footer-info">
+            <div class="container">
+                <div class="footer-info-grid">
+                    <div class="info-column-left">
+                        <div class="footer-info-logo">
+                            <img src="images/gulf-landing-logo.png" alt="Gulf Pharmacy">
                         </div>
-                        <button type="submit" class="btn-notify" style="background: transparent; border: 1.5px solid var(--gp-teal-mid); color: var(--gp-teal-mid); width: 100%; border-radius: 30px; margin-top: 8px;">Notify Me &rarr;</button>
-                    </form>
-                    <div class="app-links" style="margin-top: 32px;">
-                        <span style="font-weight: 800; display: block; margin-bottom: 12px;">Download App</span>
-                        <div class="store-badges">
-                            <a href="#" aria-label="Google Play">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" style="height: 44px;">
-                            </a>
-                            <a href="#" aria-label="App Store">
-                                <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store" style="height: 44px;">
-                            </a>
+                        <div class="info-item">
+                            <strong>Corporate address:</strong>
+                            <p>Gulfdrug LLC, 2nd St - Al Barsha, Al Barsha 1, Dubai, United Arab Emirates</p>
+                        </div>
+                        <div class="info-item" style="margin-top: 16px;">
+                            <p><strong>MOHAP License Number : JAQ9FHUL-280825</strong></p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-column-middle">
+                        <div class="info-disclaimer">
+                            <strong>Disclaimer:</strong>
+                            <p>The information provided on this website is for general informational purposes only and should not be considered a substitute for professional medical advice, diagnosis, or treatment. Always consult your physician or qualified healthcare provider for guidance on any medical condition or treatment. Product images are for illustration purposes only and may differ from the actual packaging or formulation available in-store.</p>
+                        </div>
+                    </div>
+
+                    <div class="info-column-right">
+                        <div class="info-item info-item-flex" style="margin-bottom: 12px;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l2.27-2.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                            Phone : +97145014162
+                        </div>
+                        
+                        <div class="info-item info-item-flex" style="margin-bottom: 24px;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                            Order on Whatsapp : +971564185247
+                        </div>
+                        
+                        <div class="info-social">
+                            <strong>Follow Us</strong>
+                            <div class="social-links">
+                                <a href="https://www.instagram.com/gulfpharmacydubai" target="_blank" aria-label="Instagram"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg></a>
+                                <a href="https://www.facebook.com/GulfPharmacy1/" target="_blank" aria-label="Facebook"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg></a>
+                                <a href="https://www.linkedin.com/company/gulf-pharmacy/?originalSubdomain=ae" target="_blank" aria-label="LinkedIn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg></a>
+                                <a href="https://x.com/GulfPharmacy" target="_blank" aria-label="X (Twitter)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4l11.733 16h4.267l-11.733 -16z M4 20l6.768 -6.768 M13.232 10.768l6.768 -6.768"></path></svg></a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </section>
 
-            <div class="container">
-                <hr style="border: none; border-top: 1px solid #c9dfe3; margin: 48px 0;">
-            </div>
-
+        <section class="newsletter" id="newsletter" aria-label="Features and apps" style="background: #eff8f9; padding: 48px 0;">
             <div class="container features-grid">
                 <div class="feature-item">
                     <div class="feature-icon" style="border: 1.5px solid var(--gp-teal-mid); color: var(--gp-teal-mid); background: none;">
@@ -275,12 +291,19 @@
 
         <footer class="footer">
             <div class="container footer-inner">
-                <div class="footer-copy">
-                    &copy; 2025 Gulf Pharmacy, All rights reserved.
-                    <a href="#">Shipping Policy</a> |
-                    <a href="#">Privacy Policy</a> |
-                    <a href="#">Terms &amp; Conditions</a> |
-                    <a href="#">Return &amp; Refund Policy</a>
+                <div class="footer-copy-wrap" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+                    <div class="footer-links">
+                        &copy; 2025 Gulf Pharmacy, All rights reserved.
+                        <a href="#">Shipping Policy</a> |
+                        <a href="#">Privacy Policy</a> |
+                        <a href="#">Terms &amp; Conditions</a> |
+                        <a href="#">Return &amp; Refund Policy</a>
+                    </div>
+                    <div class="footer-apps" style="display: flex; gap: 12px; align-items: center;">
+                        <span style="font-weight: 700; font-size: 14px;">Download App:</span>
+                        <a href="https://play.google.com/store/apps/details?id=com.gulfpharmacy.customerApp&pli=1" target="_blank" aria-label="Google Play"><img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Google Play" style="height: 32px;"></a>
+                        <a href="https://apps.apple.com/in/app/gulf-pharmacy-online-meds/id6458191106" target="_blank" aria-label="App Store"><img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="App Store" style="height: 32px;"></a>
+                    </div>
                 </div>
             </div>
         </footer>
