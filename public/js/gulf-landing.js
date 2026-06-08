@@ -135,6 +135,17 @@
                 <button type="button" class="cart-fab"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg></button>
             </div>
         `;
+
+        const cartFab = card.querySelector('.cart-fab');
+        if (cartFab) {
+            cartFab.onclick = (e) => {
+                e.stopPropagation();
+                if (p.detail_url) {
+                    window.location.assign(p.detail_url);
+                }
+            };
+        }
+
         return card;
     }
 
