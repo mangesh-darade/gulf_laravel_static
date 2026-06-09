@@ -1,0 +1,25 @@
+# Serve landing page without index.html in the URL
+DirectoryIndex index.html
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /LandingPages/MobilityAndHomecare/
+
+    # Redirect index.html to clean folder URL (no .html visible)
+    RewriteCond %{THE_REQUEST} \s/index\.html[\s?] [NC]
+    RewriteRule ^index\.html$ /LandingPages/MobilityAndHomecare/ [R=301,L]
+
+    # Redirect legacy index.php if present on server
+    RewriteCond %{THE_REQUEST} \s/index\.php[\s?] [NC]
+    RewriteRule ^index\.php$ /LandingPages/MobilityAndHomecare/ [R=301,L]
+
+    # Redirect legacy manage.php URLs to /manage
+    RewriteCond %{THE_REQUEST} \s/manage\.php[\s?] [NC]
+    RewriteRule ^manage\.php$ manage [R=301,L,QSA]
+
+    # Serve landing page for directory root (internal rewrite, URL stays clean)
+    RewriteRule ^$ index.html [L]
+
+    # Admin dashboard without .php in the URL
+    RewriteRule ^manage/?$ manage.php [L,QSA]
+</IfModule>

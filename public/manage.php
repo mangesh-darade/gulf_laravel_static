@@ -76,7 +76,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'submit_lead') {
 // ── Logout ────────────────────────────────────────────────────────────────────
 if (isset($_GET['action']) && $_GET['action'] === 'logout') {
     session_destroy();
-    header('Location: manage.php');
+    header('Location: manage');
     exit;
 }
 
@@ -85,7 +85,7 @@ $login_error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login_password'])) {
     if ($_POST['login_password'] === $password) {
         $_SESSION['gulf_admin_logged'] = true;
-        header('Location: manage.php');
+        header('Location: manage');
         exit;
     }
     $login_error = 'Incorrect password. Please try again.';
@@ -470,7 +470,7 @@ if ($is_logged_in) {
         <?php if ($login_error): ?>
             <div class="alert-error"><?php echo htmlspecialchars($login_error); ?></div>
         <?php endif; ?>
-        <form method="POST" action="manage.php">
+        <form method="POST" action="manage">
             <div class="form-group">
                 <label>Admin Password</label>
                 <input type="password" name="login_password" class="fc" placeholder="••••••••" required autofocus>
@@ -503,7 +503,7 @@ if ($is_logged_in) {
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                 Add Product
             </button>
-            <a href="manage.php?action=logout" class="btn btn-outline">Logout</a>
+            <a href="manage?action=logout" class="btn btn-outline">Logout</a>
         </div>
     </div>
 </header>
@@ -1100,7 +1100,7 @@ if ($is_logged_in) {
             applyFilter();
 
             try {
-                const res  = await fetch('manage.php?action=toggle', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ code, active: state }) });
+                const res  = await fetch('manage?action=toggle', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ code, active: state }) });
                 const data = await res.json();
                 if (!data.success) throw new Error(data.message);
                 const ptitle = card.querySelector('.ptitle').textContent;
@@ -1127,7 +1127,7 @@ if ($is_logged_in) {
             const title = btn.dataset.title;
             if (!confirm(`Delete "${title}"?\n\nThis cannot be undone!`)) return;
             try {
-                const res  = await fetch('manage.php?action=delete', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ code }) });
+                const res  = await fetch('manage?action=delete', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ code }) });
                 const data = await res.json();
                 if (!data.success) throw new Error(data.message);
                 const card = pgrid.querySelector(`.pcard[data-code="${code}"]`);
@@ -1150,7 +1150,7 @@ if ($is_logged_in) {
             const name = btn.dataset.name;
             if (!confirm(`Delete lead from "${name}"?\n\nThis cannot be undone!`)) return;
             try {
-                const res = await fetch('manage.php?action=delete_lead', {
+                const res = await fetch('manage?action=delete_lead', {
                     method: 'POST',
                     headers: {'Content-Type':'application/json'},
                     body: JSON.stringify({ id })
@@ -1263,7 +1263,7 @@ if ($is_logged_in) {
             savePopupBtn.textContent = 'Saving…';
 
             try {
-                const res  = await fetch('manage.php?action=save_popup', {
+                const res  = await fetch('manage?action=save_popup', {
                     method: 'POST',
                     headers: {'Content-Type':'application/json'},
                     body: JSON.stringify({ title, subtitle, button_text: buttonText, redirect_url: redirect })
@@ -1307,7 +1307,7 @@ if ($is_logged_in) {
             active:       addActiveEl.checked,
         };
 
-        const actionUrl = isEditing ? 'manage.php?action=edit' : 'manage.php?action=add';
+        const actionUrl = isEditing ? 'manage?action=edit' : 'manage?action=add';
 
         try {
             const res  = await fetch(actionUrl, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) });
