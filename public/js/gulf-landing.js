@@ -97,7 +97,7 @@
             const priceOk = !selectedPrices.length || selectedPrices.includes(getPriceGroup(p.price));
             const ratingOk = p.rating >= minRating;
 
-            if (searchOk && brandOk && catOk && priceOk && ratingOk) {
+            if (p.active !== false && searchOk && brandOk && catOk && priceOk && ratingOk) {
                 const card = createProductCard(p);
                 grid.appendChild(card);
                 visibleCount++;
