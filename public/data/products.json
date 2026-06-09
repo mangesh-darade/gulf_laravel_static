@@ -1,4 +1,10 @@
 {
+    "popup_settings": {
+        "title": "Claim Your Free Wellness Consultation & 10% Off!",
+        "subtitle": "Subscribe to Gulf Pharmacy Wellness Club today and enjoy exclusive member offers, same-day delivery updates & professional advice.",
+        "redirect_url": "",
+        "button_text": "Join Now"
+    },
     "categories": [
         {
             "id": "recovery",

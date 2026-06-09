@@ -2,9 +2,11 @@
 session_start();
 
 // ── Configuration ─────────────────────────────────────────────────────────────
-$password    = 'gulf2026';
-$json_path   = __DIR__ . '/data/products.json';
-$backup_path = __DIR__ . '/data/products_backup.json';
+$password          = 'gulf2026';
+$json_path         = __DIR__ . '/data/products.json';
+$backup_path       = __DIR__ . '/data/products_backup.json';
+$leads_json_path   = __DIR__ . '/data/leads.json';
+$leads_backup_path = __DIR__ . '/data/leads_backup.json';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function readData($path) {
@@ -25,6 +27,51 @@ function jsonResponse($success, $message, $extra = array()) {
 
 // ── Auth check ────────────────────────────────────────────────────────────────
 $is_logged_in = isset($_SESSION['gulf_admin_logged']) && $_SESSION['gulf_admin_logged'] === true;
+
+// ── AJAX: Submit Lead (PUBLIC) ────────────────────────────────────────────────
+if (isset($_GET['action']) && $_GET['action'] === 'submit_lead') {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        http_response_code(405);
+        jsonResponse(false, 'Method Not Allowed.');
+    }
+    
+    $input = json_decode(file_get_contents('php://input'), true);
+    $name  = isset($input['name']) ? trim($input['name']) : '';
+    $email = isset($input['email']) ? trim($input['email']) : '';
+    $phone = isset($input['phone']) ? trim($input['phone']) : '';
+    $country = isset($input['country']) ? trim($input['country']) : '';
+
+    if (empty($name) || empty($email) || empty($phone)) {
+        jsonResponse(false, 'First name, Email and Phone are required.');
+    }
+
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        jsonResponse(false, 'Invalid email address.');
+    }
+
+    // Read or initialize leads
+    $data = readData($leads_json_path);
+    if (!$data) {
+        $data = array('leads' => array());
+    }
+
+    $new_lead = array(
+        'id'      => 'lead_' . time() . '_' . rand(100, 999),
+        'name'    => $name,
+        'email'   => $email,
+        'phone'   => $phone,
+        'country' => $country ? $country : 'N/A',
+        'date'    => date('Y-m-d H:i:s')
+    );
+
+    array_unshift($data['leads'], $new_lead);
+
+    if (saveData($leads_json_path, $leads_backup_path, $data)) {
+        jsonResponse(true, 'Lead recorded successfully!', array('lead' => $new_lead));
+    } else {
+        jsonResponse(false, 'Failed to save lead database.');
+    }
+}
 
 // ── Logout ────────────────────────────────────────────────────────────────────
 if (isset($_GET['action']) && $_GET['action'] === 'logout') {
@@ -188,11 +235,65 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['ac
     saveData($json_path, $backup_path, $data) ? jsonResponse(true, 'Product deleted.') : jsonResponse(false, 'Failed to save.');
 }
 
-// ── Load products for page render ─────────────────────────────────────────────
+// ── AJAX: Save Popup Settings ─────────────────────────────────────────────────
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['action'] === 'save_popup') {
+    if (!$is_logged_in) { http_response_code(403); jsonResponse(false, 'Unauthorized.'); }
+    $input       = json_decode(file_get_contents('php://input'), true);
+    $title       = isset($input['title'])        ? trim($input['title'])        : '';
+    $subtitle    = isset($input['subtitle'])     ? trim($input['subtitle'])     : '';
+    $redirect    = isset($input['redirect_url']) ? trim($input['redirect_url']) : '';
+    $button_text = isset($input['button_text'])  ? trim($input['button_text'])  : 'Join Now';
+
+    if (empty($title))    jsonResponse(false, 'Popup title cannot be empty.');
+    if (empty($subtitle)) jsonResponse(false, 'Popup subtitle cannot be empty.');
+    if (empty($button_text)) jsonResponse(false, 'Popup button text cannot be empty.');
+
+    $data = readData($json_path);
+    if (!$data) jsonResponse(false, 'Could not read products.json.');
+
+    $data['popup_settings'] = array(
+        'title'        => $title,
+        'subtitle'     => $subtitle,
+        'redirect_url' => $redirect,
+        'button_text'  => $button_text
+    );
+
+    saveData($json_path, $backup_path, $data)
+        ? jsonResponse(true, 'Popup settings saved!')
+        : jsonResponse(false, 'Failed to save settings.');
+}
+
+// ── AJAX: Delete Lead ──────────────────────────────────────────────────────────
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['action'] === 'delete_lead') {
+    if (!$is_logged_in) { http_response_code(403); jsonResponse(false, 'Unauthorized.'); }
+    $input = json_decode(file_get_contents('php://input'), true);
+    $id    = isset($input['id']) ? trim($input['id']) : '';
+    if (!$id) jsonResponse(false, 'Lead ID is required.');
+    
+    $data = readData($leads_json_path);
+    if (!$data) jsonResponse(false, 'Could not read leads.json.');
+
+    $before = count($data['leads']);
+    $data['leads'] = array_values(array_filter($data['leads'], function($l) use ($id) {
+        return $l['id'] !== $id;
+    }));
+    if (count($data['leads']) === $before) { http_response_code(404); jsonResponse(false, 'Lead not found.'); }
+    saveData($leads_json_path, $leads_backup_path, $data) ? jsonResponse(true, 'Lead deleted.') : jsonResponse(false, 'Failed to save.');
+}
+
+// ── Load products and leads for page render ───────────────────────────────────
 $products = array();
+$leads    = array();
+$popup_settings = array('title' => '', 'subtitle' => '', 'redirect_url' => '', 'button_text' => 'Join Now');
 if ($is_logged_in) {
     $d = readData($json_path);
     $products = isset($d['products']) ? $d['products'] : array();
+    if (isset($d['popup_settings'])) {
+        $popup_settings = $d['popup_settings'];
+    }
+
+    $ld = readData($leads_json_path);
+    $leads = isset($ld['leads']) ? $ld['leads'] : array();
 }
 ?>
 <!DOCTYPE html>
@@ -200,7 +301,7 @@ if ($is_logged_in) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Manager | Gulf Pharmacy</title>
+    <title>Dashboard Manager | Gulf Pharmacy</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -239,6 +340,7 @@ if ($is_logged_in) {
         .btn-primary:hover { background: var(--teal-d); transform: translateY(-1px); }
         .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); font-size: 13px; }
         .btn-outline:hover { background: #f0f4f5; }
+        .btn-outline.active { background-color: var(--teal); border-color: var(--teal); color: #fff; }
         .btn-danger { background: #ffebee; color: var(--red); border: 1px solid #ffcdd2; font-size: 13px; padding: 7px 14px; }
         .btn-danger:hover { background: #ffcdd2; }
         .btn-sm { padding: 6px 14px; font-size: 12px; }
@@ -252,6 +354,7 @@ if ($is_logged_in) {
         .header-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
         .header-logo img { height: 36px; }
         .header-logo span { font-weight: 700; color: var(--teal-d); font-size: 15px; letter-spacing: .5px; }
+        .header-nav { display: flex; gap: 8px; }
         .header-actions { display: flex; gap: 10px; align-items: center; }
 
         /* ── Main ── */
@@ -326,6 +429,13 @@ if ($is_logged_in) {
         .toggle-row label.switch { margin: 0; }
         .toggle-row span { font-size: 14px; font-weight: 600; }
 
+        /* ── Leads Table Styles ── */
+        .leads-tbl { width: 100%; border-collapse: collapse; text-align: left; background: #fff; }
+        .leads-tbl th { background: #f0f4f5; padding: 14px 18px; font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--muted); border-bottom: 2px solid var(--border); }
+        .leads-tbl td { padding: 14px 18px; font-size: 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+        .leads-tbl tr:last-child td { border-bottom: none; }
+        .leads-tbl tr:hover td { background: #fcfdfe; }
+
         /* ── Toasts ── */
         .toast-area { position: fixed; bottom: 24px; right: 24px; z-index: 2000; display: flex; flex-direction: column; gap: 10px; }
         .toast { background: #fff; border-radius: 8px; padding: 14px 18px; box-shadow: 0 10px 30px rgba(0,0,0,.15); display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; min-width: 260px; border-left: 5px solid var(--teal); opacity: 0; transform: translateY(20px); animation: slideUp .3s forwards; }
@@ -337,12 +447,14 @@ if ($is_logged_in) {
         @keyframes slideUp { to   { opacity:1; transform: translateY(0); } }
 
         /* ── Responsive ── */
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
+            .header-inner { flex-direction: column; gap: 14px; }
             .controls { flex-direction: column; }
             .search-wrap { min-width: unset; width: 100%; }
             .form-row { grid-template-columns: 1fr; }
             .pcard { flex-direction: column; align-items: center; text-align: center; }
             .pactions { justify-content: center; }
+            .leads-tbl-card { overflow-x: auto; }
         }
     </style>
 </head>
@@ -353,7 +465,7 @@ if ($is_logged_in) {
 <div class="login-wrap">
     <div class="login-card">
         <img class="login-logo" src="https://gulfpharmacy.com/images/gulf-landing-logo.png" alt="Gulf Pharmacy" onerror="this.src='images/gulf-landing-logo.png';this.onerror=null">
-        <h2>Product Manager</h2>
+        <h2>Dashboard Manager</h2>
         <p>Enter the admin password to continue</p>
         <?php if ($login_error): ?>
             <div class="alert-error"><?php echo htmlspecialchars($login_error); ?></div>
@@ -372,10 +484,20 @@ if ($is_logged_in) {
 <!-- ════════════ DASHBOARD ════════════ -->
 <header class="header">
     <div class="header-inner">
-        <a href="#" class="header-logo">
-            <img src="https://gulfpharmacy.com/images/gulf-landing-logo.png" alt="Gulf Pharmacy" onerror="this.src='images/gulf-landing-logo.png';this.onerror=null">
-            <span>PRODUCT MANAGER</span>
-        </a>
+        <div style="display: flex; align-items: center; gap: 16px;">
+            <a href="#" class="header-logo">
+                <img src="https://gulfpharmacy.com/images/gulf-landing-logo.png" alt="Gulf Pharmacy" onerror="this.src='images/gulf-landing-logo.png';this.onerror=null">
+                <span>PORTAL MANAGER</span>
+            </a>
+            
+            <!-- Module Switcher Tabs -->
+            <nav class="header-nav">
+                <button class="btn btn-outline btn-sm active" id="tab-products">Products</button>
+                <button class="btn btn-outline btn-sm" id="tab-leads">Leads Module</button>
+                <button class="btn btn-outline btn-sm" id="tab-popup">⚙️ Popup Settings</button>
+            </nav>
+        </div>
+        
         <div class="header-actions">
             <button class="btn btn-primary btn-sm" id="open-add-modal">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -387,88 +509,208 @@ if ($is_logged_in) {
 </header>
 
 <main class="main">
-    <!-- Stats -->
-    <div class="stats">
-        <div class="stat">
-            <div class="lbl">Total Products</div>
-            <div class="val" id="cnt-total"><?php echo count($products); ?></div>
-        </div>
-        <div class="stat s-active">
-            <div class="lbl">Active</div>
-            <div class="val" id="cnt-active">0</div>
-        </div>
-        <div class="stat s-inactive">
-            <div class="lbl">Inactive</div>
-            <div class="val" id="cnt-inactive">0</div>
-        </div>
-    </div>
 
-    <!-- Controls -->
-    <div class="controls">
-        <div class="search-wrap">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input type="text" id="search" placeholder="Search by name, code or brand…">
-        </div>
-        <div class="filter-pills">
-            <button class="pill on" data-f="all">All</button>
-            <button class="pill" data-f="active">Active</button>
-            <button class="pill" data-f="inactive">Inactive</button>
-        </div>
-    </div>
-
-    <!-- Product Grid -->
-    <div class="pgrid" id="pgrid">
-        <?php if (empty($products)): ?>
-            <div class="empty">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="2"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
-                <h3>No products yet</h3>
-                <p>Click <strong>Add Product</strong> to get started.</p>
+    <!-- ════════════ MODULE 1: PRODUCTS SECTION ════════════ -->
+    <div id="products-section">
+        <!-- Stats -->
+        <div class="stats">
+            <div class="stat">
+                <div class="lbl">Total Products</div>
+                <div class="val" id="cnt-total"><?php echo count($products); ?></div>
             </div>
-        <?php else: ?>
-            <?php foreach ($products as $p):
-                $isActive = !isset($p['active']) || $p['active'] !== false;
-            ?>
-            <div class="pcard <?php echo $isActive ? '' : 'inactive-card'; ?>"
-                 data-code="<?php echo htmlspecialchars($p['code']); ?>"
-                 data-title="<?php echo htmlspecialchars($p['title']); ?>"
-                 data-price="<?php echo htmlspecialchars($p['price']); ?>"
-                 data-brand="<?php echo htmlspecialchars(isset($p['brand']) ? $p['brand'] : ''); ?>"
-                 data-mkt_category="<?php echo htmlspecialchars(isset($p['mkt_category']) ? $p['mkt_category'] : ''); ?>"
-                 data-rating="<?php echo htmlspecialchars(isset($p['rating']) ? $p['rating'] : '5'); ?>"
-                 data-pop="<?php echo htmlspecialchars(isset($p['pop']) ? $p['pop'] : '100'); ?>"
-                 data-image="<?php echo htmlspecialchars(isset($p['image']) ? $p['image'] : ''); ?>"
-                 data-desc="<?php echo htmlspecialchars(isset($p['desc']) ? $p['desc'] : ''); ?>"
-                 data-detail_url="<?php echo htmlspecialchars(isset($p['detail_url']) ? $p['detail_url'] : ''); ?>"
-                 data-active="<?php echo $isActive ? 'true' : 'false'; ?>">
+            <div class="stat s-active">
+                <div class="lbl">Active</div>
+                <div class="val" id="cnt-active">0</div>
+            </div>
+            <div class="stat s-inactive">
+                <div class="lbl">Inactive</div>
+                <div class="val" id="cnt-inactive">0</div>
+            </div>
+        </div>
 
-                <div class="pthumb" style="background-image:url('<?php echo htmlspecialchars(isset($p['image']) ? $p['image'] : ''); ?>')"></div>
+        <!-- Controls -->
+        <div class="controls">
+            <div class="search-wrap">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input type="text" id="search" placeholder="Search by name, code or brand…">
+            </div>
+            <div class="filter-pills">
+                <button class="pill on" data-f="all">All</button>
+                <button class="pill" data-f="active">Active</button>
+                <button class="pill" data-f="inactive">Inactive</button>
+            </div>
+        </div>
 
-                <div class="pinfo">
-                    <div>
-                        <h3 class="ptitle"><?php echo htmlspecialchars($p['title']); ?></h3>
-                        <div class="pmeta">
-                            Code: <?php echo htmlspecialchars($p['code']); ?> &nbsp;|&nbsp;
-                            <?php echo htmlspecialchars(ucfirst(isset($p['brand']) ? $p['brand'] : '')); ?>
+        <!-- Product Grid -->
+        <div class="pgrid" id="pgrid">
+            <?php if (empty($products)): ?>
+                <div class="empty">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="2"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                    <h3>No products yet</h3>
+                    <p>Click <strong>Add Product</strong> to get started.</p>
+                </div>
+            <?php else: ?>
+                <?php foreach ($products as $p):
+                    $isActive = !isset($p['active']) || $p['active'] !== false;
+                ?>
+                <div class="pcard <?php echo $isActive ? '' : 'inactive-card'; ?>"
+                     data-code="<?php echo htmlspecialchars($p['code']); ?>"
+                     data-title="<?php echo htmlspecialchars($p['title']); ?>"
+                     data-price="<?php echo htmlspecialchars($p['price']); ?>"
+                     data-brand="<?php echo htmlspecialchars(isset($p['brand']) ? $p['brand'] : ''); ?>"
+                     data-mkt_category="<?php echo htmlspecialchars(isset($p['mkt_category']) ? $p['mkt_category'] : ''); ?>"
+                     data-rating="<?php echo htmlspecialchars(isset($p['rating']) ? $p['rating'] : '5'); ?>"
+                     data-pop="<?php echo htmlspecialchars(isset($p['pop']) ? $p['pop'] : '100'); ?>"
+                     data-image="<?php echo htmlspecialchars(isset($p['image']) ? $p['image'] : ''); ?>"
+                     data-desc="<?php echo htmlspecialchars(isset($p['desc']) ? $p['desc'] : ''); ?>"
+                     data-detail_url="<?php echo htmlspecialchars(isset($p['detail_url']) ? $p['detail_url'] : ''); ?>"
+                     data-active="<?php echo $isActive ? 'true' : 'false'; ?>">
+
+                    <div class="pthumb" style="background-image:url('<?php echo htmlspecialchars(isset($p['image']) ? $p['image'] : ''); ?>')"></div>
+
+                    <div class="pinfo">
+                        <div>
+                            <h3 class="ptitle"><?php echo htmlspecialchars($p['title']); ?></h3>
+                            <div class="pmeta">
+                                Code: <?php echo htmlspecialchars($p['code']); ?> &nbsp;|&nbsp;
+                                <?php echo htmlspecialchars(ucfirst(isset($p['brand']) ? $p['brand'] : '')); ?>
+                            </div>
+                            <div class="pprice"><?php echo htmlspecialchars($p['price']); ?> AED</div>
                         </div>
-                        <div class="pprice"><?php echo htmlspecialchars($p['price']); ?> AED</div>
-                    </div>
-                    <div class="pactions">
-                        <label class="switch">
-                            <input type="checkbox" class="toggle" data-code="<?php echo htmlspecialchars($p['code']); ?>" <?php echo $isActive ? 'checked' : ''; ?>>
-                            <span class="slider"></span>
-                        </label>
-                        <span class="badge <?php echo $isActive ? 'badge-on' : 'badge-off'; ?>">
-                            <?php echo $isActive ? 'Active' : 'Inactive'; ?>
-                        </span>
-                        <button class="btn btn-danger btn-sm delete-btn" data-code="<?php echo htmlspecialchars($p['code']); ?>" data-title="<?php echo htmlspecialchars($p['title']); ?>" style="margin-left:auto">
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
-                        </button>
+                        <div class="pactions">
+                            <label class="switch">
+                                <input type="checkbox" class="toggle" data-code="<?php echo htmlspecialchars($p['code']); ?>" <?php echo $isActive ? 'checked' : ''; ?>>
+                                <span class="slider"></span>
+                            </label>
+                            <span class="badge <?php echo $isActive ? 'badge-on' : 'badge-off'; ?>">
+                                <?php echo $isActive ? 'Active' : 'Inactive'; ?>
+                            </span>
+                            <button class="btn btn-danger btn-sm delete-btn" data-code="<?php echo htmlspecialchars($p['code']); ?>" data-title="<?php echo htmlspecialchars($p['title']); ?>" style="margin-left:auto">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <?php endforeach; ?>
-        <?php endif; ?>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </div>
     </div>
+
+    <!-- ════════════ MODULE 2: LEADS SECTION ════════════ -->
+    <div id="leads-section" style="display: none;">
+        <!-- Stats -->
+        <div class="stats">
+            <div class="stat">
+                <div class="lbl">Total Leads Collected</div>
+                <div class="val" id="cnt-leads-total"><?php echo count($leads); ?></div>
+            </div>
+            <div class="stat s-active">
+                <div class="lbl">Leads Registered Today</div>
+                <div class="val" id="cnt-leads-today">0</div>
+            </div>
+            <div class="stat s-inactive">
+                <div class="lbl">Active Countries</div>
+                <div class="val" id="cnt-leads-countries">0</div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls" style="display: flex; gap: 14px; align-items: center; flex-wrap: wrap;">
+            <div class="search-wrap" style="flex: 1; min-width: 200px;">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input type="text" id="search-leads" placeholder="Search leads by name, email, country or phone…">
+            </div>
+            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                <div style="display: flex; align-items: center; gap: 6px;">
+                    <span style="font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase;">Date:</span>
+                    <input type="date" id="filter-lead-date" class="fc" style="padding: 7px 12px; font-size: 13px; width: auto; height: 38px;">
+                    <button type="button" class="btn btn-outline btn-sm" id="clear-lead-date" style="padding: 8px 12px; height: 38px;">Clear</button>
+                </div>
+                <div style="display: flex; align-items: center; gap: 6px;">
+                    <span style="font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase;">Sort:</span>
+                    <select id="sort-leads" class="fc" style="padding: 7px 32px 7px 12px; font-size: 13px; width: auto; min-width: 140px; height: 38px;">
+                        <option value="date_desc">Newest First</option>
+                        <option value="date_asc">Oldest First</option>
+                        <option value="name_asc">Name A-Z</option>
+                        <option value="name_desc">Name Z-A</option>
+                    </select>
+                </div>
+                <button class="btn btn-outline" id="export-leads-csv" style="padding: 10px 16px; height: 38px;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    Export CSV
+                </button>
+            </div>
+        </div>
+
+        <!-- Leads Table -->
+        <div class="leads-tbl-card" style="background:#fff; border:1px solid var(--border); border-radius:var(--r); overflow:hidden; box-shadow:var(--sh);">
+            <table class="leads-tbl">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Country</th>
+                        <th>Date Registered</th>
+                        <th style="text-align:right;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="leads-tbody">
+                    <?php if (empty($leads)): ?>
+                        <tr class="empty-leads-tr">
+                            <td colspan="6" style="padding:50px; text-align:center; color:var(--muted);">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom:12px; color:#b0bec5;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                                <h3>No leads collected yet</h3>
+                                <p>When visitors fill out the popup on your landing page, they will appear here.</p>
+                            </td>
+                        </tr>
+                    <?php else: ?>
+                        <?php foreach ($leads as $l): ?>
+                            <tr class="lead-row" data-id="<?php echo htmlspecialchars($l['id']); ?>" data-date-raw="<?php echo htmlspecialchars($l['date']); ?>" data-search-text="<?php echo htmlspecialchars(strtolower($l['name'] . ' ' . $l['email'] . ' ' . $l['phone'] . ' ' . (isset($l['country']) ? $l['country'] : ''))); ?>">
+                                <td style="font-weight:600; color:var(--text);"><?php echo htmlspecialchars($l['name']); ?></td>
+                                <td><a href="mailto:<?php echo htmlspecialchars($l['email']); ?>" style="color:var(--teal); text-decoration:none; font-weight:500;"><?php echo htmlspecialchars($l['email']); ?></a></td>
+                                <td><?php echo htmlspecialchars($l['phone']); ?></td>
+                                <td style="font-weight:500; color:var(--muted);"><?php echo htmlspecialchars(isset($l['country']) ? $l['country'] : 'N/A'); ?></td>
+                                <td style="font-size:13px; color:var(--muted);"><?php echo htmlspecialchars(date('M d, Y h:i A', strtotime($l['date']))); ?></td>
+                                <td style="text-align:right;">
+                                    <button class="btn btn-danger btn-sm delete-lead-btn" data-id="<?php echo htmlspecialchars($l['id']); ?>" data-name="<?php echo htmlspecialchars($l['name']); ?>">
+                                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M9 6V4h6v2"/></svg>
+                                    </button>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ════════════ MODULE 3: POPUP SETTINGS SECTION ════════════ -->
+    <div id="popup-section" style="display: none;">
+        <div style="background:#fff; border:1px solid var(--border); border-radius:var(--r); padding:32px; max-width:720px; box-shadow:var(--sh);">
+            <h2 style="font-size:18px; font-weight:700; margin-bottom:6px;">Popup Settings</h2>
+            <p style="color:var(--muted); font-size:13px; margin-bottom:24px;">These settings control the lead-capture popup on your landing page. Changes take effect immediately.</p>
+            <div id="popup-settings-error" class="alert-error" style="display:none;"></div>
+            <div class="form-group">
+                <label>Popup Title <span class="req">*</span></label>
+                <input type="text" id="ps-title" class="fc" value="<?php echo htmlspecialchars(isset($popup_settings['title']) ? $popup_settings['title'] : ''); ?>">
+            </div>
+            <div class="form-group">
+                <label>Popup Subtitle / Description <span class="req">*</span></label>
+                <textarea id="ps-subtitle" class="fc" rows="3" style="resize:vertical;"><?php echo htmlspecialchars(isset($popup_settings['subtitle']) ? $popup_settings['subtitle'] : ''); ?></textarea>
+            </div>
+            <div class="form-group">
+                <label>Popup Button Label <span class="req">*</span></label>
+                <input type="text" id="ps-button-text" class="fc" value="<?php echo htmlspecialchars(isset($popup_settings['button_text']) ? $popup_settings['button_text'] : 'Join Now'); ?>">
+            </div>
+            <div class="form-group">
+                <label>"Join Now" Redirect URL <small style="font-weight:400;">(leave blank to show thank-you message)</small></label>
+                <input type="url" id="ps-redirect" class="fc" placeholder="https://gulfpharmacy.com/..." value="<?php echo htmlspecialchars(isset($popup_settings['redirect_url']) ? $popup_settings['redirect_url'] : ''); ?>">
+            </div>
+            <button type="button" class="btn btn-primary" id="save-popup-btn">Save Popup Settings</button>
+        </div>
+    </div>
+
 </main>
 
 <!-- ════════════ ADD / EDIT PRODUCT MODAL ════════════ -->
@@ -576,19 +818,62 @@ if ($is_logged_in) {
 <script>
 (function () {
     // ── Refs ──────────────────────────────────────────────────────────────────
-    const pgrid      = document.getElementById('pgrid');
-    const searchEl   = document.getElementById('search');
-    const pills      = document.querySelectorAll('.pill');
-    const toastArea  = document.getElementById('toast-area');
-    const modal      = document.getElementById('add-modal');
-    const addForm    = document.getElementById('add-form');
-    const modalErr   = document.getElementById('modal-error');
-    const addSubmit  = document.getElementById('add-submit');
-    const imgPreview = document.getElementById('img-preview');
-    const addActiveEl = document.getElementById('add-active');
+    const pgrid        = document.getElementById('pgrid');
+    const searchEl     = document.getElementById('search');
+    const pills        = document.querySelectorAll('.pill');
+    const toastArea    = document.getElementById('toast-area');
+    const modal        = document.getElementById('add-modal');
+    const addForm      = document.getElementById('add-form');
+    const modalErr     = document.getElementById('modal-error');
+    const addSubmit    = document.getElementById('add-submit');
+    const imgPreview   = document.getElementById('img-preview');
+    const addActiveEl  = document.getElementById('add-active');
     const addActiveLbl = document.getElementById('add-active-label');
 
+    // Section Toggle Refs
+    const tabProducts     = document.getElementById('tab-products');
+    const tabLeads        = document.getElementById('tab-leads');
+    const tabPopup        = document.getElementById('tab-popup');
+    const productsSection = document.getElementById('products-section');
+    const leadsSection    = document.getElementById('leads-section');
+    const popupSection    = document.getElementById('popup-section');
+    const openAddModalBtn = document.getElementById('open-add-modal');
+
     let activeFilter = 'all';
+
+    // ── Navigation Switcher ───────────────────────────────────────────────────
+    if (tabProducts && tabLeads && tabPopup) {
+        tabProducts.addEventListener('click', () => {
+            tabProducts.classList.add('active');
+            tabLeads.classList.remove('active');
+            tabPopup.classList.remove('active');
+            productsSection.style.display = 'block';
+            leadsSection.style.display = 'none';
+            popupSection.style.display = 'none';
+            openAddModalBtn.style.display = 'inline-flex';
+        });
+
+        tabLeads.addEventListener('click', () => {
+            tabLeads.classList.add('active');
+            tabProducts.classList.remove('active');
+            tabPopup.classList.remove('active');
+            productsSection.style.display = 'none';
+            leadsSection.style.display = 'block';
+            popupSection.style.display = 'none';
+            openAddModalBtn.style.display = 'none';
+            refreshLeadsCounters();
+        });
+
+        tabPopup.addEventListener('click', () => {
+            tabPopup.classList.add('active');
+            tabProducts.classList.remove('active');
+            tabLeads.classList.remove('active');
+            productsSection.style.display = 'none';
+            leadsSection.style.display = 'none';
+            popupSection.style.display = 'block';
+            openAddModalBtn.style.display = 'none';
+        });
+    }
 
     // ── Counters ──────────────────────────────────────────────────────────────
     function refreshCounters() {
@@ -601,7 +886,33 @@ if ($is_logged_in) {
     }
     refreshCounters();
 
-    // ── Filter & Search ───────────────────────────────────────────────────────
+    function refreshLeadsCounters() {
+        const rows = document.querySelectorAll('.lead-row');
+        const todayStr = new Date().toISOString().slice(0, 10); // "YYYY-MM-DD"
+        let countToday = 0;
+        const countries = new Set();
+
+        rows.forEach(r => {
+            const dateRaw = r.dataset.dateRaw || '';
+            if (dateRaw.indexOf(todayStr) === 0) {
+                countToday++;
+            }
+            const tds = r.querySelectorAll('td');
+            if (tds.length >= 4) {
+                const countryVal = tds[3].textContent.trim();
+                if (countryVal && countryVal !== 'N/A') {
+                    countries.add(countryVal);
+                }
+            }
+        });
+
+        document.getElementById('cnt-leads-total').textContent = rows.length;
+        document.getElementById('cnt-leads-today').textContent = countToday;
+        document.getElementById('cnt-leads-countries').textContent = countries.size;
+    }
+    refreshLeadsCounters();
+
+    // ── Filter & Search: Products ─────────────────────────────────────────────
     function applyFilter() {
         const q = searchEl.value.trim().toLowerCase();
         let visible = 0;
@@ -638,6 +949,127 @@ if ($is_logged_in) {
             applyFilter();
         });
     });
+
+    // ── Search & Filter & Sort: Leads ─────────────────────────────────────────
+    const searchLeadsEl    = document.getElementById('search-leads');
+    const filterLeadDateEl = document.getElementById('filter-lead-date');
+    const clearLeadDateBtn = document.getElementById('clear-lead-date');
+    const sortLeadsEl      = document.getElementById('sort-leads');
+    const leadsTbody       = document.getElementById('leads-tbody');
+
+    function applyLeadsFilterAndSort() {
+        if (!leadsTbody) return;
+        const q = searchLeadsEl ? searchLeadsEl.value.trim().toLowerCase() : '';
+        const targetDate = filterLeadDateEl ? filterLeadDateEl.value : ''; // "YYYY-MM-DD"
+        const rows = Array.from(leadsTbody.querySelectorAll('.lead-row'));
+
+        let visibleCount = 0;
+        rows.forEach(r => {
+            const matchText = !q || r.dataset.searchText.includes(q);
+            
+            // dateRaw matches "YYYY-MM-DD HH:MM:SS"
+            const dateRaw = r.dataset.dateRaw || '';
+            const matchDate = !targetDate || dateRaw.indexOf(targetDate) === 0;
+
+            const show = matchText && matchDate;
+            r.style.display = show ? '' : 'none';
+            if (show) visibleCount++;
+        });
+
+        // Toggle empty search results row
+        let emptyRow = leadsTbody.querySelector('#no-leads-match');
+        if (visibleCount === 0 && rows.length > 0) {
+            if (!emptyRow) {
+                emptyRow = document.createElement('tr');
+                emptyRow.id = 'no-leads-match';
+                emptyRow.innerHTML = `<td colspan="6" style="padding:40px; text-align:center; color:var(--muted);">
+                    <h3>No matching leads found</h3>
+                    <p>Try clearing your search query or date filter.</p>
+                </td>`;
+                leadsTbody.appendChild(emptyRow);
+            } else {
+                emptyRow.style.display = '';
+            }
+        } else if (emptyRow) {
+            emptyRow.remove();
+        }
+
+        // Sort leads
+        const sortVal = sortLeadsEl ? sortLeadsEl.value : 'date_desc';
+        rows.sort((a, b) => {
+            if (sortVal === 'date_desc') {
+                return new Date(b.dataset.dateRaw.replace(/-/g, '/')) - new Date(a.dataset.dateRaw.replace(/-/g, '/'));
+            }
+            if (sortVal === 'date_asc') {
+                return new Date(a.dataset.dateRaw.replace(/-/g, '/')) - new Date(b.dataset.dateRaw.replace(/-/g, '/'));
+            }
+            if (sortVal === 'name_asc') {
+                const nameA = a.cells[0].textContent.toLowerCase();
+                const nameB = b.cells[0].textContent.toLowerCase();
+                return nameA.localeCompare(nameB);
+            }
+            if (sortVal === 'name_desc') {
+                const nameA = a.cells[0].textContent.toLowerCase();
+                const nameB = b.cells[0].textContent.toLowerCase();
+                return nameB.localeCompare(nameA);
+            }
+            return 0;
+        });
+
+        rows.forEach(r => leadsTbody.appendChild(r));
+    }
+
+    if (searchLeadsEl) searchLeadsEl.addEventListener('input', applyLeadsFilterAndSort);
+    if (filterLeadDateEl) filterLeadDateEl.addEventListener('change', applyLeadsFilterAndSort);
+    if (clearLeadDateBtn) {
+        clearLeadDateBtn.addEventListener('click', () => {
+            filterLeadDateEl.value = '';
+            applyLeadsFilterAndSort();
+        });
+    }
+    if (sortLeadsEl) sortLeadsEl.addEventListener('change', applyLeadsFilterAndSort);
+    
+    // Run initial sorting descending
+    applyLeadsFilterAndSort();
+
+    // ── Export Leads CSV ──────────────────────────────────────────────────────
+    const exportBtn = document.getElementById('export-leads-csv');
+    if (exportBtn) {
+        exportBtn.addEventListener('click', () => {
+            const rows = Array.from(document.querySelectorAll('.lead-row'));
+            if (rows.length === 0) {
+                toast('No leads to export!', 'err');
+                return;
+            }
+            
+            let csv = 'Name,Email,Phone,Country,Date Joined\n';
+            let countExported = 0;
+            rows.forEach(row => {
+                if (row.style.display === 'none') return;
+                const cells = Array.from(row.querySelectorAll('td'));
+                const name = cells[0].textContent.replace(/"/g, '""');
+                const email = cells[1].textContent.replace(/"/g, '""');
+                const phone = cells[2].textContent.replace(/"/g, '""');
+                const country = cells[3].textContent.replace(/"/g, '""');
+                const date = cells[4].textContent.replace(/"/g, '""');
+                csv += `"${name}","${email}","${phone}","${country}","${date}"\n`;
+                countExported++;
+            });
+
+            if (countExported === 0) {
+                toast('No matching leads found for current search.', 'err');
+                return;
+            }
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.setAttribute('download', `gulf_pharmacy_leads_${new Date().toISOString().slice(0,10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+    }
 
     // ── Toast ─────────────────────────────────────────────────────────────────
     function toast(msg, type = 'ok') {
@@ -687,7 +1119,7 @@ if ($is_logged_in) {
     }
     pgrid.querySelectorAll('.toggle').forEach(bindToggle);
 
-    // ── Delete ────────────────────────────────────────────────────────────────
+    // ── Delete Product ────────────────────────────────────────────────────────
     function bindDelete(btn) {
         btn.addEventListener('click', async (e) => {
             e.stopPropagation();
@@ -710,7 +1142,35 @@ if ($is_logged_in) {
     }
     pgrid.querySelectorAll('.delete-btn').forEach(bindDelete);
 
-    // ── Card Click (Edit) ─────────────────────────────────────────────────────
+    // ── Delete Lead ───────────────────────────────────────────────────────────
+    function bindDeleteLead(btn) {
+        btn.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            const id = btn.dataset.id;
+            const name = btn.dataset.name;
+            if (!confirm(`Delete lead from "${name}"?\n\nThis cannot be undone!`)) return;
+            try {
+                const res = await fetch('manage.php?action=delete_lead', {
+                    method: 'POST',
+                    headers: {'Content-Type':'application/json'},
+                    body: JSON.stringify({ id })
+                });
+                const data = await res.json();
+                if (!data.success) throw new Error(data.message);
+                const row = leadsTbody.querySelector(`.lead-row[data-id="${id}"]`);
+                if (row) {
+                    row.remove();
+                    refreshLeadsCounters();
+                }
+                toast(`Lead from "${name}" deleted.`);
+            } catch (err) {
+                toast(err.message || 'Failed to delete lead.', 'err');
+            }
+        });
+    }
+    document.querySelectorAll('.delete-lead-btn').forEach(bindDeleteLead);
+
+    // ── Card Click (Edit Product) ─────────────────────────────────────────────
     function bindCardClick(card) {
         card.addEventListener('click', (e) => {
             // Prevent triggering modal when interactive elements are clicked
@@ -782,7 +1242,45 @@ if ($is_logged_in) {
         addActiveLbl.textContent = addActiveEl.checked ? 'Active (will show on catalog)' : 'Inactive (hidden from catalog)';
     });
 
-    // ── Form Submit (Add or Edit) ─────────────────────────────────────────────
+    // ── Save Popup Settings Form Submit ───────────────────────────────────────
+    const savePopupBtn = document.getElementById('save-popup-btn');
+    if (savePopupBtn) {
+        savePopupBtn.addEventListener('click', async () => {
+            const title      = document.getElementById('ps-title').value.trim();
+            const subtitle   = document.getElementById('ps-subtitle').value.trim();
+            const buttonText = document.getElementById('ps-button-text').value.trim();
+            const redirect   = document.getElementById('ps-redirect').value.trim();
+            const errEl      = document.getElementById('popup-settings-error');
+            errEl.style.display = 'none';
+
+            if (!title || !subtitle || !buttonText) {
+                errEl.textContent = 'Title, subtitle and button label are required.';
+                errEl.style.display = 'block';
+                return;
+            }
+
+            savePopupBtn.disabled = true;
+            savePopupBtn.textContent = 'Saving…';
+
+            try {
+                const res  = await fetch('manage.php?action=save_popup', {
+                    method: 'POST',
+                    headers: {'Content-Type':'application/json'},
+                    body: JSON.stringify({ title, subtitle, button_text: buttonText, redirect_url: redirect })
+                });
+                const data = await res.json();
+                if (!data.success) throw new Error(data.message);
+                toast('Popup settings saved! ✅');
+            } catch(e) {
+                errEl.textContent = e.message || 'Save failed.';
+                errEl.style.display = 'block';
+            }
+            savePopupBtn.disabled = false;
+            savePopupBtn.textContent = 'Save Popup Settings';
+        });
+    }
+
+    // ── Form Submit (Add or Edit Product) ─────────────────────────────────────
     addForm.addEventListener('submit', async e => {
         e.preventDefault();
         modalErr.style.display = 'none';
