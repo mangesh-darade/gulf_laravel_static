@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Manager | Gulf Pharmacy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/manage.css">
+    <style>.hidden { display: none !important; }</style>
+</head>
+<body>
+
+<div id="login-screen" class="login-wrap hidden">
+    <div class="login-card">
+        <img class="login-logo" src="https://gulfpharmacy.com/images/gulf-landing-logo.png" alt="Gulf Pharmacy" onerror="this.src='images/gulf-landing-logo.png';this.onerror=null">
+        <h2>Dashboard Manager</h2>
+        <p>Enter the admin password to continue</p>
+        <div id="login-error" class="alert-error hidden"></div>
+        <form id="login-form">
+            <div class="form-group">
+                <label>Admin Password</label>
+                <input type="password" id="login-password" class="fc" placeholder="••••••••" required autofocus>
+            </div>
+            <button type="submit" class="btn btn-primary btn-full">Authenticate &rarr;</button>
+        </form>
+    </div>
+</div>
+
+<div id="dashboard-screen" class="hidden">
+    <header class="header">
+        <div class="header-inner">
+            <div style="display:flex;align-items:center;gap:16px;">
+                <a href="#" class="header-logo">
+                    <img src="https://gulfpharmacy.com/images/gulf-landing-logo.png" alt="Gulf Pharmacy" onerror="this.src='images/gulf-landing-logo.png';this.onerror=null">
+                    <span>PORTAL MANAGER</span>
+                </a>
+                <nav class="header-nav">
+                    <button class="btn btn-outline btn-sm active" id="tab-products" type="button">Products</button>
+                    <button class="btn btn-outline btn-sm" id="tab-leads" type="button">Leads Module</button>
+                    <button class="btn btn-outline btn-sm" id="tab-popup" type="button">Popup Settings</button>
+                </nav>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-outline btn-sm" id="export-products-json" type="button">Download products.json</button>
+                <label class="btn btn-outline btn-sm" style="cursor:pointer;margin:0;">
+                    Upload JSON
+                    <input type="file" id="import-products-json" accept=".json" hidden>
+                </label>
+                <button class="btn btn-primary btn-sm" id="open-add-modal" type="button">+ Add Product</button>
+                <button class="btn btn-outline" id="logout-btn" type="button">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div id="products-section">
+            <div class="stats">
+                <div class="stat"><div class="lbl">Total Products</div><div class="val" id="cnt-total">0</div></div>
+                <div class="stat s-active"><div class="lbl">Active</div><div class="val" id="cnt-active">0</div></div>
+                <div class="stat s-inactive"><div class="lbl">Inactive</div><div class="val" id="cnt-inactive">0</div></div>
+            </div>
+            <div class="controls">
+                <div class="search-wrap">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <input type="text" id="search" placeholder="Search by name, code or brand…">
+                </div>
+                <div class="filter-pills">
+                    <button class="pill on" data-f="all" type="button">All</button>
+                    <button class="pill" data-f="active" type="button">Active</button>
+                    <button class="pill" data-f="inactive" type="button">Inactive</button>
+                </div>
+            </div>
+            <div class="pgrid" id="pgrid"></div>
+        </div>
+
+        <div id="leads-section" class="hidden">
+            <div class="stats">
+                <div class="stat"><div class="lbl">Total Leads</div><div class="val" id="cnt-leads-total">0</div></div>
+                <div class="stat s-active"><div class="lbl">Today</div><div class="val" id="cnt-leads-today">0</div></div>
+                <div class="stat s-inactive"><div class="lbl">Countries</div><div class="val" id="cnt-leads-countries">0</div></div>
+            </div>
+            <div class="controls">
+                <div class="search-wrap" style="flex:1;">
+                    <input type="text" id="search-leads" class="fc" placeholder="Search leads…" style="padding-left:14px;">
+                </div>
+                <input type="date" id="filter-lead-date" class="fc" style="width:auto;">
+                <button type="button" class="btn btn-outline btn-sm" id="clear-lead-date">Clear</button>
+                <select id="sort-leads" class="fc" style="width:auto;">
+                    <option value="date_desc">Newest First</option>
+                    <option value="date_asc">Oldest First</option>
+                    <option value="name_asc">Name A-Z</option>
+                    <option value="name_desc">Name Z-A</option>
+                </select>
+                <button type="button" class="btn btn-outline" id="export-leads-csv">Export CSV</button>
+                <button type="button" class="btn btn-outline" id="export-leads-json">Download leads.json</button>
+            </div>
+            <div class="leads-tbl-card" style="background:#fff;border:1px solid var(--border);border-radius:var(--r);overflow:hidden;">
+                <table class="leads-tbl">
+                    <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Country</th><th>Date</th><th style="text-align:right;">Actions</th></tr></thead>
+                    <tbody id="leads-tbody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="popup-section" class="hidden">
+            <div style="background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:32px;max-width:720px;">
+                <h2 style="font-size:18px;font-weight:700;margin-bottom:6px;">Popup Settings</h2>
+                <p style="color:var(--muted);font-size:13px;margin-bottom:24px;">Lead-capture popup on the landing page.</p>
+                <div id="popup-settings-error" class="alert-error hidden"></div>
+                <div class="form-group"><label>Popup Title <span class="req">*</span></label><input type="text" id="ps-title" class="fc"></div>
+                <div class="form-group"><label>Subtitle <span class="req">*</span></label><textarea id="ps-subtitle" class="fc" rows="3"></textarea></div>
+                <div class="form-group"><label>Button Label <span class="req">*</span></label><input type="text" id="ps-button-text" class="fc" value="Join Now"></div>
+                <div class="form-group"><label>Redirect URL</label><input type="url" id="ps-redirect" class="fc" placeholder="https://gulfpharmacy.com/..."></div>
+                <button type="button" class="btn btn-primary" id="save-popup-btn">Save Popup Settings</button>
+            </div>
+        </div>
+    </main>
+</div>
+
+<div class="modal-overlay" id="add-modal">
+    <div class="modal">
+        <div class="modal-header">
+            <h2 id="modal-title">Add New Product</h2>
+            <button class="modal-close" id="close-modal" type="button">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div id="modal-error" class="alert-error hidden"></div>
+            <form id="add-form">
+                <input type="hidden" id="old-code">
+                <div class="form-row">
+                    <div class="form-group"><label>Product Code <span class="req">*</span></label><input type="text" name="code" class="fc" required></div>
+                    <div class="form-group"><label>Price (AED) <span class="req">*</span></label><input type="number" name="price" class="fc" step="0.01" min="0" required></div>
+                </div>
+                <div class="form-group"><label>Title <span class="req">*</span></label><input type="text" name="title" class="fc" required></div>
+                <div class="form-row">
+                    <div class="form-group"><label>Brand <span class="req">*</span></label><input type="text" name="brand" class="fc" required></div>
+                    <div class="form-group"><label>Category <span class="req">*</span></label>
+                        <select name="mkt_category" class="fc" required>
+                            <option value="">-- Select --</option>
+                            <option value="recovery">Post-Surgery Recovery</option>
+                            <option value="mobility">Everyday Wellness</option>
+                            <option value="elder_safety">Senior Protection</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Rating</label>
+                        <select name="rating" class="fc"><option value="5">5</option><option value="4">4</option><option value="3">3</option><option value="2">2</option><option value="1">1</option></select>
+                    </div>
+                    <div class="form-group"><label>Popularity</label><input type="number" name="pop" class="fc" value="100" min="0"></div>
+                </div>
+                <div class="form-group"><label>Image URL</label>
+                    <div class="img-preview-wrap">
+                        <input type="url" name="image" id="image-url" class="fc" placeholder="https://...">
+                        <img id="img-preview" class="img-preview" alt="">
+                    </div>
+                </div>
+                <div class="form-group"><label>Description</label><input type="text" name="desc" class="fc"></div>
+                <div class="form-group"><label>Detail URL <span class="req">*</span></label><input type="url" name="detail_url" class="fc" required></div>
+                <div class="form-group">
+                    <div class="toggle-row">
+                        <label class="switch"><input type="checkbox" id="add-active" checked><span class="slider"></span></label>
+                        <span id="add-active-label">Active</span>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full" id="add-submit">Add Product</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="toast-area" id="toast-area"></div>
+
+<script src="js/mobility-config.js"></script>
+<script src="js/manage.js"></script>
+</body>
+</html>
